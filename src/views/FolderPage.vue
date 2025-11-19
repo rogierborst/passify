@@ -8,7 +8,6 @@ import {
     IonTitle,
     IonToolbar,
     IonButton,
-    IonTextarea
 } from '@ionic/vue';
 
 import {
@@ -18,13 +17,11 @@ import {
     CapacitorBarcodeScannerScanOrientation, CapacitorBarcodeScannerScanResult,
     CapacitorBarcodeScannerTypeHintALLOption
 } from '@capacitor/barcode-scanner';
-import {ref, shallowRef} from "vue";
+import {ref} from "vue";
 import QRCode from "@/components/QR-Code.vue";
 import BarCode from "@/components/BarCode.vue";
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
-
-const text = shallowRef();
 
 const scanCode = async () => {
     try {
@@ -66,16 +63,19 @@ const scanCode = async () => {
             </ion-header>
 
             <div id="container">
-                <ion-button @click="scanCode">Scannen</ion-button>
+                <ion-button @click="scanCode" style="margin-bottom: 1rem;">Scannen</ion-button>
 
-                <ion-textarea :value="scannedCode?.ScanResult || 'No code'"/>
+                <div style="margin-bottom: 1rem;">
+                    Code: <span v-text="scannedCode?.ScanResult || 'No code, yet'" />
+                </div>
+                <div>
+                    Format: <span v-text="scannedCode?.format || 'No format, yet'" />
+                </div>
 
-                <ion-textarea :value="scannedCode?.format || 'No format!'"/>
-
-                <QRCode data="Dit is een QR code" />
+                <QRCode :data="scannedCode?.ScanResult ?? ''" />
 
                  <hr />
-                <BarCode data="barcode" />
+                <BarCode :data="scannedCode?.ScanResult ?? ''" />
             </div>
         </ion-content>
     </ion-page>
