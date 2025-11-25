@@ -1,3 +1,56 @@
+<script setup lang="ts">
+import {
+    IonApp,
+    IonContent,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonListHeader,
+    IonMenu,
+    IonMenuToggle,
+    IonNote,
+    IonRouterOutlet,
+    IonSplitPane,
+} from '@ionic/vue';
+import { ref } from 'vue';
+import {
+    heartOutline,
+    heartSharp,
+    mailOutline,
+    mailSharp,
+    paperPlaneOutline,
+    paperPlaneSharp,
+} from 'ionicons/icons';
+
+const selectedIndex = ref(0);
+const appPages = [
+    {
+        title: 'Passes',
+        url: '/folder/passes',
+        iosIcon: mailOutline,
+        mdIcon: mailSharp,
+    },
+    {
+        title: 'About',
+        url: '/folder/about',
+        iosIcon: paperPlaneOutline,
+        mdIcon: paperPlaneSharp,
+    },
+    {
+        title: 'Favorites',
+        url: '/folder/favorites',
+        iosIcon: heartOutline,
+        mdIcon: heartSharp,
+    },
+];
+
+const path = window.location.pathname.split('folder/')[1];
+if (path !== undefined) {
+    selectedIndex.value = appPages.findIndex((page) => page.title.toLowerCase() === path.toLowerCase());
+}
+</script>
+
 <template>
   <ion-app>
     <ion-split-pane content-id="main-content">
@@ -20,59 +73,6 @@
     </ion-split-pane>
   </ion-app>
 </template>
-
-<script setup lang="ts">
-import {
-  IonApp,
-  IonContent,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonMenu,
-  IonMenuToggle,
-  IonNote,
-  IonRouterOutlet,
-  IonSplitPane,
-} from '@ionic/vue';
-import { ref } from 'vue';
-import {
-  heartOutline,
-  heartSharp,
-  mailOutline,
-  mailSharp,
-  paperPlaneOutline,
-  paperPlaneSharp,
-} from 'ionicons/icons';
-
-const selectedIndex = ref(0);
-const appPages = [
-  {
-    title: 'Passes',
-    url: '/folder/passes',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp,
-  },
-  {
-    title: 'About',
-    url: '/folder/about',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp,
-  },
-  {
-    title: 'Favorites',
-    url: '/folder/favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp,
-  },
-];
-
-const path = window.location.pathname.split('folder/')[1];
-if (path !== undefined) {
-  selectedIndex.value = appPages.findIndex((page) => page.title.toLowerCase() === path.toLowerCase());
-}
-</script>
 
 <style scoped>
 ion-menu ion-content {
