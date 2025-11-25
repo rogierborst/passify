@@ -14,28 +14,21 @@ import {
     IonSplitPane,
 } from '@ionic/vue';
 import { ref } from 'vue';
-import {
-    heartOutline,
-    heartSharp,
-    mailOutline,
-    mailSharp,
-    paperPlaneOutline,
-    paperPlaneSharp,
-} from 'ionicons/icons';
+import { barcode, barcodeOutline, cardOutline, cardSharp, heartOutline, heartSharp } from 'ionicons/icons';
 
 const selectedIndex = ref(0);
 const appPages = [
     {
         title: 'Passes',
         url: '/folder/passes',
-        iosIcon: mailOutline,
-        mdIcon: mailSharp,
+        iosIcon: cardOutline,
+        mdIcon: cardSharp,
     },
     {
-        title: 'About',
-        url: '/folder/about',
-        iosIcon: paperPlaneOutline,
-        mdIcon: paperPlaneSharp,
+        title: 'Add Pass',
+        url: '/folder/add',
+        iosIcon: barcodeOutline,
+        mdIcon: barcode,
     },
     {
         title: 'Favorites',

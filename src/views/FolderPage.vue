@@ -34,6 +34,7 @@ const scanCode = async () => {
     const platform = Capacitor.getPlatform();
 
     if (platform === 'web') {
+
         const result: ScanResult | undefined = await webScannerRef.value!.scan();
 
         if (!result) {
