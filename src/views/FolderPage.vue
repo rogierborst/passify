@@ -17,21 +17,31 @@ import {
     CapacitorBarcodeScannerScanOrientation, CapacitorBarcodeScannerScanResult,
     CapacitorBarcodeScannerTypeHintALLOption
 } from '@capacitor/barcode-scanner';
-import {ref} from "vue";
+import { ref, useTemplateRef } from "vue";
 import QRCode from "@/components/QR-Code.vue";
 import BarCode from "@/components/BarCode.vue";
 import { Capacitor } from '@capacitor/core';
-import { Html5Qrcode } from 'html5-qrcode';
+import WebScanner from '@/components/WebScanner.vue';
+import { ScanResult } from '@/types/scan';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
 const data = ref<string | null>(null);
 const dataType = ref<string | number | null>(null);
 
+const webScannerRef = useTemplateRef('webScannerRef');
+
 const scanCode = async () => {
     const platform = Capacitor.getPlatform();
 
     if (platform === 'web') {
-        await webScan();
+        const result: ScanResult | undefined = await webScannerRef.value!.scan();
+
+        if (!result) {
+            console.error('no scan result');
+            return;
+        }
+        data.value = result.data;
+        dataType.value = result.dataType;
 
         return;
     }
@@ -39,8 +49,7 @@ const scanCode = async () => {
     try {
         scannedCode.value = await CapacitorBarcodeScanner.scanBarcode({
             hint: CapacitorBarcodeScannerTypeHintALLOption.ALL,
-            scanText: 'woohoo',
-            scanInstructions: 'scan a code, bitch!',
+            scanInstructions: 'scan a code!',
             cameraDirection: CapacitorBarcodeScannerCameraDirection.BACK,
             scanOrientation: CapacitorBarcodeScannerScanOrientation.ADAPTIVE,
             android: {
@@ -57,19 +66,6 @@ const scanCode = async () => {
     } catch (error) {
         console.error('🥐', error);
     }
-}
-
-const webScan = async () => {
-    const html5QrCode = new Html5Qrcode("reader");
-    await html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 30, qrbox: 500 },
-        (decodedText) => {
-            data.value = decodedText;
-            html5QrCode.stop();
-        },
-        (error) => console.error('Scan error', error)
-    );
 }
 </script>
 
@@ -93,6 +89,7 @@ const webScan = async () => {
             </ion-header>
 
             <div id="container">
+                <WebScanner ref="webScannerRef" />
                 <ion-button @click="scanCode" style="margin-bottom: 1rem;">Scannen</ion-button>
 
                 <div style="margin-bottom: 1rem;">
