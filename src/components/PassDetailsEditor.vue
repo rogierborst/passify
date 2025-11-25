@@ -5,8 +5,8 @@ import {IonList, IonItem, IonInput, IonButton} from '@ionic/vue';
 const name = ref<string>();
 const color = ref<string>();
 
-const savePass = () => {
-    console.log('saving 🪪')
+const savePass = async() => {
+    // @TODO: Check out this snippet on Claude.ai: https://claude.ai/chat/cfb8885f-fc97-4447-a86e-0ffcfdd97745
 }
 </script>
 
