@@ -20,13 +20,26 @@ import {
 import {ref} from "vue";
 import QRCode from "@/components/QR-Code.vue";
 import BarCode from "@/components/BarCode.vue";
+import { Capacitor } from '@capacitor/core';
+import { Html5Qrcode } from 'html5-qrcode';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
+const data = ref<string | null>(null);
+const dataType = ref<string | number | null>(null);
 
 const scanCode = async () => {
+    const platform = Capacitor.getPlatform();
+
+    if (platform === 'web') {
+        await webScan();
+
+        return;
+    }
+
     try {
         scannedCode.value = await CapacitorBarcodeScanner.scanBarcode({
             hint: CapacitorBarcodeScannerTypeHintALLOption.ALL,
+            scanText: 'woohoo',
             scanInstructions: 'scan a code, bitch!',
             cameraDirection: CapacitorBarcodeScannerCameraDirection.BACK,
             scanOrientation: CapacitorBarcodeScannerScanOrientation.ADAPTIVE,
@@ -35,17 +48,34 @@ const scanCode = async () => {
             },
             web: {
                 showCameraSelection: true,
-                scannerFPS: 50
+                scannerFPS: 30
             }
         });
+
+        data.value = scannedCode.value.ScanResult;
+        dataType.value = scannedCode.value.format;
     } catch (error) {
         console.error('🥐', error);
     }
+}
+
+const webScan = async () => {
+    const html5QrCode = new Html5Qrcode("reader");
+    await html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 30, qrbox: 500 },
+        (decodedText) => {
+            data.value = decodedText;
+            html5QrCode.stop();
+        },
+        (error) => console.error('Scan error', error)
+    );
 }
 </script>
 
 <template>
     <ion-page>
+        <span id="reader" />
         <ion-header :translucent="true">
             <ion-toolbar>
                 <ion-buttons slot="start">
@@ -66,10 +96,10 @@ const scanCode = async () => {
                 <ion-button @click="scanCode" style="margin-bottom: 1rem;">Scannen</ion-button>
 
                 <div style="margin-bottom: 1rem;">
-                    Code: <span v-text="scannedCode?.ScanResult || 'No code, yet'" />
+                    Code: <span v-text="data || 'No code, yet'" />
                 </div>
                 <div>
-                    Format: <span v-text="scannedCode?.format || 'No format, yet'" />
+                    Format: <span v-text="dataType || 'No format, yet'" />
                 </div>
 
                 <QRCode :data="scannedCode?.ScanResult ?? ''" />
