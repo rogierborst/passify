@@ -1,23 +1,42 @@
 <script setup lang="ts">
 import {
+    IonButton,
     IonButtons,
     IonContent,
     IonHeader,
     IonMenuButton,
     IonPage,
     IonTitle,
-    IonToolbar,
+    IonToolbar
 } from '@ionic/vue';
 import Scanner from '@/components/Scanner.vue';
 import { ScanResult } from '@/types/scan';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
+import {type Pass, addPass} from '@/services/pass-storage';
 
 const scannedCard = ref<ScanResult>();
+const passData = ref<Partial<Pass>>({
+    color: '#145920'
+});
 
 const handleCapture = (result: ScanResult) => {
     scannedCard.value = result;
+    passData.value.data = result.data;
+    passData.value.format = result.dataType;
 }
+
+const savePass = async () => {
+    // @TODO: Check out this snippet on Claude.ai: https://claude.ai/chat/cfb8885f-fc97-4447-a86e-0ffcfdd97745
+    if (!everythingSet.value) return;
+
+    await addPass(passData.value as Pass);
+    console.log('saved!');
+}
+
+const everythingSet = computed(() => {
+    return scannedCard.value && passData.value.label && passData.value.color;
+});
 
 </script>
 
@@ -41,8 +60,11 @@ const handleCapture = (result: ScanResult) => {
             </ion-header>
 
             <div id="container">
-                <Scanner @capture="handleCapture"/>
-                <PassDetailsEditor v-if="scannedCard" />
+                <form @submit.prevent="savePass">
+                    <Scanner @capture="handleCapture"/>
+                    <PassDetailsEditor v-if="scannedCard" v-model="passData" />
+                    <ion-button type="submit" color="success" :disabled="!everythingSet">Opslaan</ion-button>
+                </form>
             </div>
         </ion-content>
     </ion-page>

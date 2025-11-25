@@ -2,7 +2,6 @@
 import JsBarcode from "jsbarcode";
 import {onMounted, useTemplateRef, watch} from "vue";
 
-
 const svgRef = useTemplateRef('canvas');
 
 interface Props {

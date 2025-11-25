@@ -11,6 +11,10 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import ('../views/OverviewPage.vue')
     },
     {
+        path: '/pass/:id',
+        component: () => import ('../views/ShowPassPage.vue'),
+    },
+    {
         path: '/add',
         component: () => import ('../views/AddPage.vue')
     }

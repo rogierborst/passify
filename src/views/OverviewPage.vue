@@ -7,64 +7,8 @@ import {
     IonPage,
     IonTitle,
     IonToolbar,
-    IonButton,
 } from '@ionic/vue';
-
-import {
-    CapacitorBarcodeScanner,
-    CapacitorBarcodeScannerAndroidScanningLibrary,
-    CapacitorBarcodeScannerCameraDirection,
-    CapacitorBarcodeScannerScanOrientation, CapacitorBarcodeScannerScanResult,
-    CapacitorBarcodeScannerTypeHintALLOption
-} from '@capacitor/barcode-scanner';
-import { ref, useTemplateRef } from "vue";
-import QRCode from "@/components/QR-Code.vue";
-import BarCode from "@/components/BarCode.vue";
-import { Capacitor } from '@capacitor/core';
-import WebScanner from '@/components/WebScanner.vue';
-import { ScanResult } from '@/types/scan';
-import { CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner/dist/esm/definitions';
-
-const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
-const data = ref<string | null>(null);
-const dataType = ref<string | number | null>(null);
-
-const webScannerRef = useTemplateRef('webScannerRef');
-
-const scanCode = async () => {
-    const platform = Capacitor.getPlatform();
-
-    if (platform === 'web') {
-
-        const result: ScanResult | undefined = await webScannerRef.value!.scan();
-
-        if (!result) {
-            console.error('no scan result');
-            return;
-        }
-        data.value = result.data;
-        dataType.value = result.dataType;
-
-        return;
-    }
-
-    try {
-        scannedCode.value = await CapacitorBarcodeScanner.scanBarcode({
-            hint: CapacitorBarcodeScannerTypeHintALLOption.ALL,
-            scanInstructions: 'scan a code!',
-            cameraDirection: CapacitorBarcodeScannerCameraDirection.BACK,
-            scanOrientation: CapacitorBarcodeScannerScanOrientation.ADAPTIVE,
-            android: {
-                scanningLibrary: CapacitorBarcodeScannerAndroidScanningLibrary.MLKIT
-            },
-        });
-
-        data.value = scannedCode.value.ScanResult;
-        dataType.value = CapacitorBarcodeScannerTypeHint[scannedCode.value.format];
-    } catch (error) {
-        console.error('🥐', error);
-    }
-}
+import PassList from '@/components/PassList.vue';
 </script>
 
 <template>
@@ -87,19 +31,10 @@ const scanCode = async () => {
             </ion-header>
 
             <div id="container">
-                <WebScanner ref="webScannerRef" />
-                <ion-button @click="scanCode" style="margin-bottom: 1rem;">Scannen</ion-button>
-
-                <div style="margin-bottom: 1rem;">
-                    Code: <span v-text="data || 'No code, yet'" />
+                <div class="main">
+                    <h1>Passify this!</h1>
+                    <PassList />
                 </div>
-                <div>
-                    Format: <span v-text="data ? dataType : 'No format, yet'" />
-                </div>
-
-                <QRCode v-if="dataType === 'QR_CODE'" :data="data" />
-
-                <BarCode v-if="dataType && dataType !== 'QR_CODE'" :data="data" />
             </div>
         </ion-content>
     </ion-page>
