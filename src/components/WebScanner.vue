@@ -1,6 +1,9 @@
 <script setup lang="ts">
+/**
+ * This component is used in the browser previews, to scan a bar or qr code.
+ */
 import { ref, useTemplateRef } from 'vue';
-import { BrowserCodeReader, BrowserMultiFormatReader } from '@zxing/browser';
+import { BarcodeFormat, BrowserCodeReader, BrowserMultiFormatReader } from '@zxing/browser';
 import { ScanResult } from '@/types/scan';
 
 const isActive = ref<boolean>(false);
@@ -20,10 +23,11 @@ const scan = async () => {
         const selectedDevice = videoInputDevices[0].deviceId;
 
         const result = await codeReader.decodeOnceFromVideoDevice(selectedDevice, videoRef.value!);
+        console.log(result, BarcodeFormat[result.getBarcodeFormat()]);
 
         const returnData: ScanResult = {
             data: result.getText(),
-            dataType: result.getBarcodeFormat()
+            dataType: BarcodeFormat[result.getBarcodeFormat()]
         }
         emit('capture', returnData);
 

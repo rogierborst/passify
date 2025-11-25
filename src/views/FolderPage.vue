@@ -23,6 +23,7 @@ import BarCode from "@/components/BarCode.vue";
 import { Capacitor } from '@capacitor/core';
 import WebScanner from '@/components/WebScanner.vue';
 import { ScanResult } from '@/types/scan';
+import { CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner/dist/esm/definitions';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
 const data = ref<string | null>(null);
@@ -56,14 +57,10 @@ const scanCode = async () => {
             android: {
                 scanningLibrary: CapacitorBarcodeScannerAndroidScanningLibrary.MLKIT
             },
-            web: {
-                showCameraSelection: true,
-                scannerFPS: 30
-            }
         });
 
         data.value = scannedCode.value.ScanResult;
-        dataType.value = scannedCode.value.format;
+        dataType.value = CapacitorBarcodeScannerTypeHint[scannedCode.value.format];
     } catch (error) {
         console.error('🥐', error);
     }
@@ -97,13 +94,12 @@ const scanCode = async () => {
                     Code: <span v-text="data || 'No code, yet'" />
                 </div>
                 <div>
-                    Format: <span v-text="dataType || 'No format, yet'" />
+                    Format: <span v-text="data ? dataType : 'No format, yet'" />
                 </div>
 
-                <QRCode :data="scannedCode?.ScanResult ?? ''" />
+                <QRCode v-if="dataType === 'QR_CODE'" :data="data" />
 
-                 <hr />
-                <BarCode :data="scannedCode?.ScanResult ?? ''" />
+                <BarCode v-if="dataType && dataType !== 'QR_CODE'" :data="data" />
             </div>
         </ion-content>
     </ion-page>
