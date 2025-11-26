@@ -31,7 +31,7 @@ export const getPasses = async (): Promise<Pass[]> => {
 }
 
 /** Add a single pass to the storage. */
-export const addPass = async (pass: Pass): Promise<void> => {
+export const addPass = async (pass: Pass): Promise<Pass> => {
     const existingPasses = await getPasses();
     const newPass = {
         ...pass,
@@ -41,9 +41,11 @@ export const addPass = async (pass: Pass): Promise<void> => {
 
     existingPasses.push(newPass);
     await savePasses(existingPasses);
+
+    return newPass;
 }
 
-export const getPass = async (id: string): Promise<Pass> => {
+export const getPass = async (id: string): Promise<Pass | undefined> => {
     const passes = await getPasses();
 
     return passes.find((pass) => pass.id === id);

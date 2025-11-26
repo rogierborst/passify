@@ -10,7 +10,7 @@ const route = useRoute();
 const pass = ref<Pass>();
 
 onMounted(async() => {
-    pass.value = await getPass(route.params.id);
+    pass.value = await getPass(route.params.id as string);
 });
 </script>
 
@@ -45,6 +45,8 @@ onMounted(async() => {
 
 <style scoped>
 .main {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -53,5 +55,13 @@ onMounted(async() => {
 
 ion-content {
     --background: var(--pass-color);
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

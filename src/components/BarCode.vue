@@ -32,5 +32,5 @@ const renderBarcode = () => {
 </script>
 
 <template>
-<canvas ref="canvas" />
+<svg ref="canvas" />
 </template>

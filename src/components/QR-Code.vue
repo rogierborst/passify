@@ -27,5 +27,11 @@ const qrCode = useQRCode(data, {
 </script>
 
 <template>
-    <img v-if="data" :src="qrCode" alt="QR Code"/>
+    <img v-if="data" :src="qrCode" alt="QR Code" />
 </template>
+
+<style scoped>
+img {
+    width: 100%;
+}
+</style>

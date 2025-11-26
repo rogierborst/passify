@@ -7,6 +7,7 @@ import {
     IonPage,
     IonTitle,
     IonToolbar,
+    IonButton,
 } from '@ionic/vue';
 import PassList from '@/components/PassList/PassList.vue';
 </script>
@@ -32,8 +33,8 @@ import PassList from '@/components/PassList/PassList.vue';
 
             <div id="container">
                 <div class="main">
-                    
                     <PassList />
+                    <ion-button size="large" router-link="/add">Toevoegen</ion-button>
                 </div>
             </div>
         </ion-content>
