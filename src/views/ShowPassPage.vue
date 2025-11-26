@@ -1,17 +1,25 @@
 <script setup lang="ts">
 import { getPass, type Pass } from '@/services/pass-storage';
-import { IonContent, IonButtons, IonMenuButton, IonTitle, IonToolbar, IonPage, IonHeader } from '@ionic/vue';
-import { useRoute } from 'vue-router';
+import { IonContent, IonButtons, IonButton, IonMenuButton, IonTitle, IonToolbar, IonPage, IonHeader, IonIcon } from '@ionic/vue';
+import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import QRCode from '@/components/QR-Code.vue';
 import BarCode from '@/components/BarCode.vue';
+import { trashBinSharp } from 'ionicons/icons';
+import { deletePass } from '@/services/pass-storage';
 
+const router = useRouter();
 const route = useRoute();
 const pass = ref<Pass>();
 
 onMounted(async() => {
     pass.value = await getPass(route.params.id as string);
 });
+
+const removePass = async () => {
+    await deletePass(route.params.id as string);
+    await router.push('passes');
+}
 </script>
 
 <template>
@@ -22,6 +30,11 @@ onMounted(async() => {
                 <ion-menu-button color="primary"></ion-menu-button>
             </ion-buttons>
             <ion-title>{{ pass?.label }}</ion-title>
+            <ion-buttons slot="end">
+                <ion-button color="danger" @click="removePass">
+                    <ion-icon :icon="trashBinSharp"></ion-icon>
+                </ion-button>
+            </ion-buttons>
         </ion-toolbar>
     </ion-header>
 

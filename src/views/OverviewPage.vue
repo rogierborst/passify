@@ -7,9 +7,11 @@ import {
     IonPage,
     IonTitle,
     IonToolbar,
-    IonButton,
+    IonButton, IonIcon
 } from '@ionic/vue';
 import PassList from '@/components/PassList/PassList.vue';
+import { refreshCircleSharp } from 'ionicons/icons';
+import { getPasses } from '@/services/pass-storage';
 </script>
 
 <template>
@@ -21,6 +23,11 @@ import PassList from '@/components/PassList/PassList.vue';
                     <ion-menu-button color="primary"></ion-menu-button>
                 </ion-buttons>
                 <ion-title>{{ $route.params.id }}</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button color="primary" @click="getPasses()">
+                        <ion-icon :icon="refreshCircleSharp"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
             </ion-toolbar>
         </ion-header>
 
