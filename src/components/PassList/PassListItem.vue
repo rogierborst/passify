@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Pass } from '@/services/pass-storage';
 import { useRouter } from 'vue-router';
+import { textColorForBackground } from '@/utils/color';
 
 const props = defineProps<{ pass: Pass }>();
 
@@ -14,7 +15,7 @@ const showPass = () => router.push(`/pass/${ props.pass.id }`);
         class="pass-item"
         @click="showPass()"
     >
-        <h2 v-text="pass.label" />
+        <h2 v-text="pass.label" :style="{ color: textColorForBackground(pass.color)}" />
     </div>
 </template>
 
