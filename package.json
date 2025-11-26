@@ -14,6 +14,7 @@
   "dependencies": {
     "@capacitor/android": "^7.4.4",
     "@capacitor/app": "7.1.0",
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/barcode-scanner": "^2.2.0",
     "@capacitor/core": "7.4.4",
     "@capacitor/haptics": "7.0.2",
