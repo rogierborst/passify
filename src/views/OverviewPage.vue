@@ -8,7 +8,7 @@ import {
     IonTitle,
     IonToolbar,
 } from '@ionic/vue';
-import PassList from '@/components/PassList.vue';
+import PassList from '@/components/PassList/PassList.vue';
 </script>
 
 <template>
@@ -32,7 +32,7 @@ import PassList from '@/components/PassList.vue';
 
             <div id="container">
                 <div class="main">
-                    <h1>Passify this!</h1>
+                    
                     <PassList />
                 </div>
             </div>
