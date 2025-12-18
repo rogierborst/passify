@@ -22,6 +22,7 @@ const qrCode = useQRCode(data, {
         dark: props.lineColor,
         light: props.backgroundColor,
     },
+    width: 2000,
 });
 
 </script>
@@ -32,6 +33,7 @@ const qrCode = useQRCode(data, {
 
 <style scoped>
 img {
-    width: 100%;
+    max-height: calc(100vh - 100px);
+    max-width: 100vw;
 }
 </style>
