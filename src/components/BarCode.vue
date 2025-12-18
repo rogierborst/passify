@@ -26,6 +26,9 @@ const renderBarcode = () => {
     JsBarcode(svgRef.value, props.data, {
         background: props.backgroundColor,
         lineColor: props.lineColor,
+        width: 6,
+        height: 500,
+        fontSize: 60
     });
 }
 
@@ -34,3 +37,9 @@ const renderBarcode = () => {
 <template>
 <svg ref="canvas" />
 </template>
+
+<style scoped>
+svg {
+    width: 100%;
+}
+</style>

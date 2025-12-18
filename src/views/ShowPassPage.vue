@@ -18,7 +18,7 @@ onMounted(async() => {
 
 const removePass = async () => {
     await deletePass(route.params.id as string);
-    await router.push('passes');
+    await router.push('/passes');
 }
 </script>
 

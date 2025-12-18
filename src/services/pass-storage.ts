@@ -25,6 +25,7 @@ export const savePasses = async (passes: Pass[]): Promise<void> => {
 
 /** Get all passes saved in storage. */
 export const getPasses = async (): Promise<Pass[]> => {
+    console.log('getting passes');
     const { value } = await Preferences.get({key: STORAGE_KEY });
 
     return value ? JSON.parse(value) : [];

@@ -8,7 +8,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/passes',
-        component: () => import ('../views/OverviewPage.vue')
+        component: () => import ('../views/PassesPage.vue')
     },
     {
         path: '/pass/:id',

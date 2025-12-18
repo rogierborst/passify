@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { getPasses, type Pass } from '@/services/pass-storage';
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import PassListItem from '@/components/PassList/PassListItem.vue';
 
 const allPasses = ref<Pass[]>([]);
 
-onMounted(async () => {
+onBeforeMount(async () => {
+    console.log('on before mount');
     allPasses.value = await getPasses();
 })
 </script>

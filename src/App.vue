@@ -14,7 +14,7 @@ import {
     IonSplitPane
 } from '@ionic/vue';
 import { ref } from 'vue';
-import { barcode, barcodeOutline, cardOutline, cardSharp, heartOutline, heartSharp } from 'ionicons/icons';
+import { barcode, barcodeOutline, cardOutline, cardSharp } from 'ionicons/icons';
 
 const selectedIndex = ref(0);
 const appPages = [
@@ -30,17 +30,11 @@ const appPages = [
         iosIcon: barcodeOutline,
         mdIcon: barcode
     },
-    {
-        title: 'Favorites',
-        url: '/folder/favorites',
-        iosIcon: heartOutline,
-        mdIcon: heartSharp
-    }
 ];
 
-const path = window.location.pathname.split('folder/')[1];
+const path = window.location.pathname;
 if (path !== undefined) {
-    selectedIndex.value = appPages.findIndex((page) => page.title.toLowerCase() === path.toLowerCase());
+    selectedIndex.value = appPages.findIndex((page) => page.url.toLowerCase() === path.toLowerCase());
 }
 </script>
 
@@ -53,18 +47,18 @@ if (path !== undefined) {
                         <ion-list-header>Passify</ion-list-header>
                         <ion-note>All your passes in one place</ion-note>
 
-                        <ion-menu-toggle :auto-hide="false" v-for="(p, i) in appPages" :key="i">
+                        <ion-menu-toggle :auto-hide="false" v-for="(page, i) in appPages" :key="i">
                             <ion-item
                                 @click="selectedIndex = i"
                                 router-direction="root"
-                                :router-link="p.url"
+                                :router-link="page.url"
                                 lines="none"
                                 :detail="false"
                                 class="hydrated"
                                 :class="{ selected: selectedIndex === i }"
                             >
-                                <ion-icon aria-hidden="true" slot="start" :ios="p.iosIcon" :md="p.mdIcon" />
-                                <ion-label>{{ p.title }}</ion-label>
+                                <ion-icon aria-hidden="true" slot="start" :ios="page.iosIcon" :md="page.mdIcon" />
+                                <ion-label>{{ page.title }}</ion-label>
                             </ion-item>
                         </ion-menu-toggle>
                     </ion-list>
