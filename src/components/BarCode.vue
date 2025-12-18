@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import JsBarcode from "jsbarcode";
-import {onMounted, useTemplateRef, watch} from "vue";
+import { onMounted, useTemplateRef, watch } from "vue";
 
 const svgRef = useTemplateRef('canvas');
 
 interface Props {
-    data: string;
+    data?: string;
     lineColor?: string;
     backgroundColor?: string;
 }
@@ -13,7 +13,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(),{
     data: '007',
     lineColor: '#000',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
 });
 
 watch(props, () => {
@@ -26,9 +26,8 @@ const renderBarcode = () => {
     JsBarcode(svgRef.value, props.data, {
         background: props.backgroundColor,
         lineColor: props.lineColor,
-        width: 6,
-        height: 500,
-        fontSize: 60
+        width: 5,
+        height: 300
     });
 }
 

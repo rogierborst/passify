@@ -3,10 +3,9 @@ import { getPass, type Pass } from '@/services/pass-storage';
 import { IonContent, IonButtons, IonButton, IonMenuButton, IonTitle, IonToolbar, IonPage, IonHeader, IonIcon } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import QRCode from '@/components/QR-Code.vue';
-import BarCode from '@/components/BarCode.vue';
 import { trashBinSharp } from 'ionicons/icons';
 import { deletePass } from '@/services/pass-storage';
+import CodeViewer from '@/components/CodeViewer.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -47,8 +46,7 @@ const removePass = async () => {
 
         <div class="container">
             <div class="main" v-if="pass">
-                <QRCode v-if="pass.format === 'QR_CODE'" :data="pass.data" />
-                <BarCode v-else :data="pass.data" />
+                <CodeViewer :data="pass" />
             </div>
         </div>
 
@@ -58,12 +56,8 @@ const removePass = async () => {
 
 <style scoped>
 .main {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    max-width: 80vh;
+    max-height: 80vh;
 }
 
 ion-content {

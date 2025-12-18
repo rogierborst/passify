@@ -5,10 +5,11 @@ import PassListItem from '@/components/PassList/PassListItem.vue';
 
 const allPasses = ref<Pass[]>([]);
 
-onBeforeMount(async () => {
-    console.log('on before mount');
+const fetchPasses = async () => {
     allPasses.value = await getPasses();
-})
+}
+
+onBeforeMount(async () => fetchPasses());
 </script>
 
 <template>

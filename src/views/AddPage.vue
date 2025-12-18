@@ -15,6 +15,9 @@ import { computed, ref } from 'vue';
 import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
 import {type Pass, addPass} from '@/services/pass-storage';
 import { useRouter } from 'vue-router';
+import BarCode from '@/components/BarCode.vue';
+import QRCode from '@/components/QR-Code.vue';
+import CodeViewer from '@/components/CodeViewer.vue';
 
 const scannedCard = ref<ScanResult>();
 const passData = ref<Partial<Pass>>({
@@ -61,26 +64,20 @@ const everythingSet = computed(() => {
             </ion-header>
 
             <div id="container">
-                <form @submit.prevent="savePass">
-                    <Scanner @capture="handleCapture"/>
-                    <PassDetailsEditor v-if="scannedCard" v-model="passData" />
-                    <ion-button type="submit" color="success" :disabled="!everythingSet">Opslaan</ion-button>
-                </form>
+                <Scanner @capture="handleCapture" />
+                <template v-if="scannedCard">
+                    <CodeViewer v-if="scannedCard" :data="scannedCard" />
+                    <form @submit.prevent="savePass">
+                        <PassDetailsEditor v-if="scannedCard" v-model="passData" />
+                        <ion-button type="submit" color="success" :disabled="!everythingSet">Opslaan</ion-button>
+                    </form>
+                </template>
             </div>
         </ion-content>
     </ion-page>
 </template>
 
 <style scoped>
-#container {
-    text-align: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 #container strong {
     font-size: 20px;
     line-height: 26px;

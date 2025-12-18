@@ -16,7 +16,7 @@ import { IonButton, IonCard, IonCardHeader, IonCardContent } from '@ionic/vue';
 import BarCode from '@/components/BarCode.vue';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
-const data = ref<string | null>(null);
+const data = ref<string | undefined>(undefined);
 const dataType = ref<string | number | null>(null);
 
 const emit = defineEmits<{capture: [ScanResult]}>();
@@ -71,15 +71,11 @@ const scanCode = async () => {
 <template>
     <WebScanner ref="webScannerRef" />
     <ion-card>
-        <ion-card-header>
+        <ion-card-header v-if="!dataType">
             <ion-button @click="scanCode" style="margin-bottom: 1rem;">Scannen</ion-button>
         </ion-card-header>
         <ion-card-content>
-            <QRCode v-if="dataType === 'QR_CODE'" :data="data" />
-
-            <BarCode v-if="dataType && dataType !== 'QR_CODE'" :data="data" />
-
-            <div v-if="dataType" class="text-center">{{ data }}</div>
+            <ion-button v-if="dataType" @click="scanCode">Nog een keer</ion-button>
         </ion-card-content>
     </ion-card>
 </template>
