@@ -6,20 +6,19 @@ import {
     CapacitorBarcodeScannerScanOrientation, CapacitorBarcodeScannerScanResult,
     CapacitorBarcodeScannerTypeHintALLOption
 } from '@capacitor/barcode-scanner';
-import { inject, watch, ref, useTemplateRef } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { Capacitor } from '@capacitor/core';
 import { ScanResult } from '@/types/scan';
 import { CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner/dist/esm/definitions';
 import WebScanner from '@/components/WebScanner.vue';
 import { IonButton, IonCard, IonCardHeader, IonCardContent } from '@ionic/vue';
-import { usePageRefreshSignal } from '@/composables/usePageRefresh';
+import { useOnPageRefresh } from '@/composables/usePageRefresh';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
 const data = ref<string | undefined>(undefined);
 const dataType = ref<string | number | null>(null);
 
-const refresh = usePageRefreshSignal()
-watch(refresh, () => {
+useOnPageRefresh(() => {
     data.value = undefined;
     dataType.value = null;
 });

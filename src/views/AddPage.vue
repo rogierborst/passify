@@ -11,7 +11,7 @@ import {
 } from '@ionic/vue';
 import Scanner from '@/components/Scanner.vue';
 import { ScanResult } from '@/types/scan';
-import { computed, provide, ref } from 'vue';
+import { computed, ref } from 'vue';
 import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
 import { useRouter } from 'vue-router';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
@@ -27,12 +27,12 @@ const passData = ref<Partial<Pass>>({
 });
 
 
-const refreshSignal = providePageRefresh();
+providePageRefresh();
 const resetData = () => {
     scannedCard.value = undefined;
     passData.value = { color: '#145920' };
-    refreshSignal.value++;
-}
+};
+onIonViewWillEnter(() => resetData());
 
 const handleCapture = (result: ScanResult) => {
     scannedCard.value = result;
@@ -44,14 +44,12 @@ const savePass = async () => {
     if (!dataIsValid.value) return;
 
     const savedPass = await passesStore.addPass(passData.value as Pass);
-    await router.push(`pass/${savedPass.id}`);
+    await router.push(`pass/${ savedPass.id }`);
 }
 
 const dataIsValid = computed(() => {
     return scannedCard.value && passData.value.label && passData.value.color;
 });
-
-onIonViewWillEnter(() => resetData());
 </script>
 
 <template>
