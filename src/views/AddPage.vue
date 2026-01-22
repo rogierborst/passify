@@ -16,6 +16,7 @@ import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
 import { useRouter } from 'vue-router';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
+import { providePageRefresh } from '@/composables/usePageRefresh';
 
 const passesStore = usePassesStore();
 const router = useRouter();
@@ -24,13 +25,13 @@ const scannedCard = ref<ScanResult>();
 const passData = ref<Partial<Pass>>({
     color: '#145920'
 });
-const refreshKey = ref<number>(0);
-provide('refreshKey', refreshKey);
 
+
+const refreshSignal = providePageRefresh();
 const resetData = () => {
     scannedCard.value = undefined;
     passData.value = { color: '#145920' };
-    refreshKey.value++;
+    refreshSignal.value++;
 }
 
 const handleCapture = (result: ScanResult) => {
@@ -51,7 +52,6 @@ const dataIsValid = computed(() => {
 });
 
 onIonViewWillEnter(() => resetData());
-
 </script>
 
 <template>

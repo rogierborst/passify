@@ -12,18 +12,17 @@ import { ScanResult } from '@/types/scan';
 import { CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner/dist/esm/definitions';
 import WebScanner from '@/components/WebScanner.vue';
 import { IonButton, IonCard, IonCardHeader, IonCardContent } from '@ionic/vue';
+import { usePageRefreshSignal } from '@/composables/usePageRefresh';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
 const data = ref<string | undefined>(undefined);
 const dataType = ref<string | number | null>(null);
 
-const refreshKey = inject('refreshKey');
-watch(refreshKey, () => {
-    console.log('refreshkey changed', refreshKey);
+const refresh = usePageRefreshSignal()
+watch(refresh, () => {
     data.value = undefined;
     dataType.value = null;
 });
-
 
 const emit = defineEmits<{capture: [ScanResult]}>();
 
