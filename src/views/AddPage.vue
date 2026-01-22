@@ -7,23 +7,31 @@ import {
     IonMenuButton,
     IonPage,
     IonTitle,
-    IonToolbar
+    IonToolbar, onIonViewWillEnter
 } from '@ionic/vue';
 import Scanner from '@/components/Scanner.vue';
 import { ScanResult } from '@/types/scan';
-import { computed, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
 import { useRouter } from 'vue-router';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 
 const passesStore = usePassesStore();
+const router = useRouter();
 
 const scannedCard = ref<ScanResult>();
 const passData = ref<Partial<Pass>>({
     color: '#145920'
 });
-const router = useRouter();
+const refreshKey = ref<number>(0);
+provide('refreshKey', refreshKey);
+
+const resetData = () => {
+    scannedCard.value = undefined;
+    passData.value = { color: '#145920' };
+    refreshKey.value++;
+}
 
 const handleCapture = (result: ScanResult) => {
     scannedCard.value = result;
@@ -41,6 +49,8 @@ const savePass = async () => {
 const dataIsValid = computed(() => {
     return scannedCard.value && passData.value.label && passData.value.color;
 });
+
+onIonViewWillEnter(() => resetData());
 
 </script>
 

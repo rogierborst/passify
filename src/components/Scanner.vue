@@ -6,18 +6,24 @@ import {
     CapacitorBarcodeScannerScanOrientation, CapacitorBarcodeScannerScanResult,
     CapacitorBarcodeScannerTypeHintALLOption
 } from '@capacitor/barcode-scanner';
-import { ref, useTemplateRef } from "vue";
+import { inject, watch, ref, useTemplateRef } from "vue";
 import { Capacitor } from '@capacitor/core';
 import { ScanResult } from '@/types/scan';
 import { CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner/dist/esm/definitions';
 import WebScanner from '@/components/WebScanner.vue';
-import QRCode from '@/components/CodeViewer/QR-Code.vue';
 import { IonButton, IonCard, IonCardHeader, IonCardContent } from '@ionic/vue';
-import BarCode from '@/components/CodeViewer/BarCode.vue';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
 const data = ref<string | undefined>(undefined);
 const dataType = ref<string | number | null>(null);
+
+const refreshKey = inject('refreshKey');
+watch(refreshKey, () => {
+    console.log('refreshkey changed', refreshKey);
+    data.value = undefined;
+    dataType.value = null;
+});
+
 
 const emit = defineEmits<{capture: [ScanResult]}>();
 
