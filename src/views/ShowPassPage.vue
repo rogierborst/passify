@@ -18,6 +18,7 @@ import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
 import PassDetailsForm from '@/components/PassDetailsForm.vue';
+import PassEditor from '@/components/PassEditor.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -83,7 +84,7 @@ const removePass = async () => {
         </ion-header>
 
         <div ref="swipeableRef" class="swipeable-container">
-            <ion-modal ref="editor" :is-open="editing">
+            <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
                 <ion-header>
                     <ion-toolbar>
                         <ion-buttons slot="start">
@@ -96,7 +97,7 @@ const removePass = async () => {
                     </ion-toolbar>
                 </ion-header>
                 <ion-content>
-                    <PassDetailsForm v-model="pass" />
+                    <PassEditor v-model="pass" />
                 </ion-content>
             </ion-modal>
 
