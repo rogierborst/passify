@@ -1,25 +1,20 @@
 <script setup lang="ts">
-import {
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonMenuButton,
-    IonPage,
-    IonTitle,
-    IonToolbar, onIonViewWillEnter
-} from '@ionic/vue';
+import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, onIonViewWillEnter } from '@ionic/vue';
 import Scanner from '@/components/Scanner.vue';
 import { ScanResult } from '@/types/scan';
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
 import { useRouter } from 'vue-router';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { providePageRefresh } from '@/composables/usePageRefresh';
+import { useSwipeToPage } from '@/composables/useSwipeToPage';
 
 const passesStore = usePassesStore();
 const router = useRouter();
+
+const swipeableRef = useTemplateRef('swipeableRef');
+useSwipeToPage(swipeableRef, '/passes');
 
 const scannedCard = ref<ScanResult>();
 const passData = ref<Partial<Pass>>({
@@ -65,21 +60,23 @@ const dataIsValid = computed(() => {
         </ion-header>
 
         <ion-content :fullscreen="true">
-            <ion-header collapse="condense">
-                <ion-toolbar>
-                    <ion-title size="large">Toevoegen</ion-title>
-                </ion-toolbar>
-            </ion-header>
+            <div ref="swipeableRef" class="swipeable-container">
+                <ion-header collapse="condense">
+                    <ion-toolbar>
+                        <ion-title size="large">Toevoegen</ion-title>
+                    </ion-toolbar>
+                </ion-header>
 
-            <div id="container">
-                <Scanner @capture="handleCapture" />
-                <template v-if="scannedCard">
-                    <CodeViewer v-if="scannedCard" :data="scannedCard" />
-                    <form @submit.prevent="savePass">
-                        <PassDetailsEditor v-if="scannedCard" v-model="passData" />
-                        <ion-button type="submit" color="success" :disabled="!dataIsValid">Opslaan</ion-button>
-                    </form>
-                </template>
+                <div id="container">
+                    <Scanner @capture="handleCapture" />
+                    <template v-if="scannedCard">
+                        <CodeViewer v-if="scannedCard" :data="scannedCard" />
+                        <form @submit.prevent="savePass">
+                            <PassDetailsEditor v-if="scannedCard" v-model="passData" />
+                            <ion-button type="submit" color="success" :disabled="!dataIsValid">Opslaan</ion-button>
+                        </form>
+                    </template>
+                </div>
             </div>
         </ion-content>
     </ion-page>
@@ -100,5 +97,10 @@ const dataIsValid = computed(() => {
 
 #container a {
     text-decoration: none;
+}
+
+.swipeable-container {
+    min-height: 100%;
+    width: 100%;
 }
 </style>
