@@ -12,17 +12,17 @@ const localPass = ref<Pass>();
 // clone when model changes
 watch(
     () => pass.value,
-    (updatedPass: Pass) => {
+    (updatedPass: Pass | undefined) => {
         localPass.value = updatedPass ? structuredClone(toRaw(updatedPass)) : undefined;
     },
     { immediate: true }
 );
 
 const save = () => {
+    if (!pass.value?.id || !localPass.value) return;
+
     usePassesStore().updatePass(pass.value!.id, localPass.value);
-    if (localPass.value) {
-        pass.value = structuredClone(toRaw(localPass.value));
-    }
+    pass.value = structuredClone(toRaw(localPass.value));
 
     emit('save');
 }
@@ -30,7 +30,7 @@ const save = () => {
 
 <template>
     <div>
-        <PassDetailsForm v-model="localPass" />
+        <PassDetailsForm v-model="localPass!" />
         <ion-button @click="save">Opslaan</ion-button>
         <ion-button @click="emit('cancel')">Annuleren</ion-button>
     </div>
