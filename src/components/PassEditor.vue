@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import PassDetailsForm from '@/components/PassDetailsForm.vue';
 import { IonButton } from '@ionic/vue';
-import { Pass } from '@/stores/passes';
+import { Pass, usePassesStore } from '@/stores/passes';
 import { ref, toRaw, watch } from 'vue';
+
+const emit = defineEmits(['save', 'cancel']);
 
 const pass = defineModel<Pass>();
 const localPass = ref<Pass>();
@@ -17,15 +19,19 @@ watch(
 );
 
 const save = () => {
+    usePassesStore().updatePass(pass.value!.id, localPass.value);
     if (localPass.value) {
         pass.value = structuredClone(toRaw(localPass.value));
     }
+
+    emit('save');
 }
 </script>
 
 <template>
     <div>
         <PassDetailsForm v-model="localPass" />
-        <ion-button @click="save">Save</ion-button>
+        <ion-button @click="save">Opslaan</ion-button>
+        <ion-button @click="emit('cancel')">Annuleren</ion-button>
     </div>
 </template>

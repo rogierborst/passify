@@ -87,17 +87,11 @@ const removePass = async () => {
             <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
                 <ion-header>
                     <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-button @click="editing = false">Annuleren</ion-button>
-                        </ion-buttons>
                         <ion-title>Kaart bewerken</ion-title>
-                        <ion-buttons slot="end">
-                            <ion-button color="primary">Opslaan</ion-button>
-                        </ion-buttons>
                     </ion-toolbar>
                 </ion-header>
                 <ion-content>
-                    <PassEditor v-model="pass" />
+                    <PassEditor v-model="pass" @save="editing = false" @cancel="editing=false" />
                 </ion-content>
             </ion-modal>
 
