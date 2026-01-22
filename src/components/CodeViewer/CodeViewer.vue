@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BarCode from '@/components/BarCode.vue';
-import QRCode from '@/components/QR-Code.vue';
+import BarCode from '@/components/CodeViewer/BarCode.vue';
+import QRCode from '@/components/CodeViewer/QR-Code.vue';
 import { ScanResult } from '@/types/scan';
 import { computed } from 'vue';
 import { Pass } from '@/services/pass-storage';

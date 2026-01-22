@@ -13,11 +13,11 @@ import Scanner from '@/components/Scanner.vue';
 import { ScanResult } from '@/types/scan';
 import { computed, ref } from 'vue';
 import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
-import {type Pass, addPass} from '@/services/pass-storage';
 import { useRouter } from 'vue-router';
-import BarCode from '@/components/BarCode.vue';
-import QRCode from '@/components/QR-Code.vue';
-import CodeViewer from '@/components/CodeViewer.vue';
+import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
+import { Pass, usePassesStore } from '@/stores/passes';
+
+const passesStore = usePassesStore();
 
 const scannedCard = ref<ScanResult>();
 const passData = ref<Partial<Pass>>({
@@ -34,7 +34,7 @@ const handleCapture = (result: ScanResult) => {
 const savePass = async () => {
     if (!everythingSet.value) return;
 
-    const savedPass = await addPass(passData.value as Pass);
+    const savedPass = await passesStore.addPass(passData.value as Pass);
     await router.push(`pass/${savedPass.id}`);
 }
 

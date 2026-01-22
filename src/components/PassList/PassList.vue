@@ -1,20 +1,13 @@
 <script setup lang="ts">
-import { getPasses, type Pass } from '@/services/pass-storage';
-import { onBeforeMount, ref } from 'vue';
 import PassListItem from '@/components/PassList/PassListItem.vue';
+import { usePassesStore } from '@/stores/passes';
 
-const allPasses = ref<Pass[]>([]);
-
-const fetchPasses = async () => {
-    allPasses.value = await getPasses();
-}
-
-onBeforeMount(async () => fetchPasses());
+const passesStore = usePassesStore();
 </script>
 
 <template>
     <div class="pass-list">
-        <PassListItem v-for="pass in allPasses" :key="pass.id" :pass />
+        <PassListItem v-for="pass in passesStore.passes" :key="pass.id" :pass />
     </div>
 </template>
 

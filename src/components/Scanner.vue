@@ -11,9 +11,9 @@ import { Capacitor } from '@capacitor/core';
 import { ScanResult } from '@/types/scan';
 import { CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner/dist/esm/definitions';
 import WebScanner from '@/components/WebScanner.vue';
-import QRCode from '@/components/QR-Code.vue';
+import QRCode from '@/components/CodeViewer/QR-Code.vue';
 import { IonButton, IonCard, IonCardHeader, IonCardContent } from '@ionic/vue';
-import BarCode from '@/components/BarCode.vue';
+import BarCode from '@/components/CodeViewer/BarCode.vue';
 
 const scannedCode = ref<CapacitorBarcodeScannerScanResult | null>(null);
 const data = ref<string | undefined>(undefined);

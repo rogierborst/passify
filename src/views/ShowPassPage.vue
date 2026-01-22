@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { getPass, type Pass } from '@/services/pass-storage';
 import { IonContent, IonButtons, IonButton, IonMenuButton, IonTitle, IonToolbar, IonPage, IonHeader, IonIcon } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { trashBinSharp } from 'ionicons/icons';
-import { deletePass } from '@/services/pass-storage';
-import CodeViewer from '@/components/CodeViewer.vue';
+import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
+import { Pass, usePassesStore } from '@/stores/passes';
 
 const router = useRouter();
 const route = useRoute();
 const pass = ref<Pass>();
+const passesStore = usePassesStore();
 
-onMounted(async() => {
-    pass.value = await getPass(route.params.id as string);
+onMounted(() => {
+    pass.value = passesStore.getPassById(route.params.id as string);
 });
 
 const removePass = async () => {
-    await deletePass(route.params.id as string);
+    await passesStore.deletePass(route.params.id as string);
     await router.push('/passes');
 }
 </script>

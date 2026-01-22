@@ -11,7 +11,9 @@ import {
 } from '@ionic/vue';
 import PassList from '@/components/PassList/PassList.vue';
 import { refreshCircleSharp } from 'ionicons/icons';
-import { getPasses } from '@/services/pass-storage';
+import { usePassesStore } from '@/stores/passes';
+
+const passesStore = usePassesStore();
 </script>
 
 <template>
@@ -24,7 +26,7 @@ import { getPasses } from '@/services/pass-storage';
                 </ion-buttons>
                 <ion-title>{{ $route.params.id }}</ion-title>
                 <ion-buttons slot="end">
-                    <ion-button color="primary" @click="getPasses()">
+                    <ion-button color="primary" @click="passesStore.loadPasses">
                         <ion-icon :icon="refreshCircleSharp"></ion-icon>
                     </ion-button>
                 </ion-buttons>

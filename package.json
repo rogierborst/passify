@@ -30,6 +30,7 @@
     "html5-qrcode": "^2.3.8",
     "ionicons": "^7.0.0",
     "jsbarcode": "^3.12.1",
+    "pinia": "^3.0.4",
     "qrcode": "^1.5.4",
     "vue": "^3.3.0",
     "vue-router": "^4.2.0"
