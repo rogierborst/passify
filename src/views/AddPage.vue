@@ -3,7 +3,7 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, I
 import Scanner from '@/components/Scanner.vue';
 import { ScanResult } from '@/types/scan';
 import { computed, ref, useTemplateRef } from 'vue';
-import PassDetailsEditor from '@/components/PassDetailsEditor.vue';
+import PassDetailsForm from '@/components/PassDetailsForm.vue';
 import { useRouter } from 'vue-router';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
@@ -72,7 +72,7 @@ const dataIsValid = computed(() => {
                     <template v-if="scannedCard">
                         <CodeViewer v-if="scannedCard" :data="scannedCard" />
                         <form @submit.prevent="savePass">
-                            <PassDetailsEditor v-if="scannedCard" v-model="passData" />
+                            <PassDetailsForm v-if="scannedCard" v-model="passData" />
                             <ion-button type="submit" color="success" :disabled="!dataIsValid">Opslaan</ion-button>
                         </form>
                     </template>

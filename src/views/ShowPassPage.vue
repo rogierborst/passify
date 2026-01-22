@@ -3,12 +3,13 @@ import {
     IonContent,
     IonButtons,
     IonButton,
+    IonModal,
     IonMenuButton,
     IonTitle,
     IonToolbar,
     IonPage,
     IonHeader,
-    IonIcon
+    IonIcon, onIonViewDidEnter, createGesture
 } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, useTemplateRef } from 'vue';
@@ -16,18 +17,48 @@ import { trashBinSharp } from 'ionicons/icons';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
+import PassDetailsForm from '@/components/PassDetailsForm.vue';
 
 const router = useRouter();
 const route = useRoute();
 const pass = ref<Pass>();
 const passesStore = usePassesStore();
 
-onMounted(() => {
+const fetchPass = () => {
     pass.value = passesStore.getPassById(route.params.id as string);
-})
+}
+onIonViewDidEnter(() => fetchPass());
+onMounted(() => fetchPass());
+
 
 const swipeableRef = useTemplateRef('swipeableRef');
 useSwipeToPage(swipeableRef, '/passes');
+
+const titleRef = useTemplateRef('titleRef');
+let lastOnStart = 0;
+const editing = ref<boolean>(false);
+
+onMounted(() => {
+    const gesture = createGesture({
+        el: titleRef.value.$el,
+        threshold: 0,
+        gestureName: 'double-click',
+        onStart () {
+            console.log('yolo');
+            const now = Date.now();
+
+            if (Math.abs(now - lastOnStart) <= 500) {
+                console.log('go go go');
+                editing.value = true;
+                lastOnStart = 0;
+            } else {
+                lastOnStart = now;
+            }
+        }
+    });
+
+    gesture.enable();
+});
 
 const removePass = async () => {
     await passesStore.deletePass(route.params.id as string);
@@ -38,9 +69,9 @@ const removePass = async () => {
 <template>
     <ion-page>
         <ion-header :translucent="true">
-            <ion-toolbar>
+            <ion-toolbar ref="titleRef">
                 <ion-buttons slot="start">
-                    <ion-menu-button color="primary"></ion-menu-button>
+                    <ion-menu-button color="primary" />
                 </ion-buttons>
                 <ion-title>{{ pass?.label }}</ion-title>
                 <ion-buttons slot="end">
@@ -52,6 +83,23 @@ const removePass = async () => {
         </ion-header>
 
         <div ref="swipeableRef" class="swipeable-container">
+            <ion-modal ref="editor" :is-open="editing">
+                <ion-header>
+                    <ion-toolbar>
+                        <ion-buttons slot="start">
+                            <ion-button @click="editing = false">Annuleren</ion-button>
+                        </ion-buttons>
+                        <ion-title>Kaart bewerken</ion-title>
+                        <ion-buttons slot="end">
+                            <ion-button color="primary">Opslaan</ion-button>
+                        </ion-buttons>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content>
+                    <PassDetailsForm v-model="pass" />
+                </ion-content>
+            </ion-modal>
+
             <ion-content :fullscreen="true" :style="{ '--pass-color': pass?.color }">
                 <ion-header collapse="condense">
                     <ion-toolbar>
