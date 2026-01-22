@@ -32,13 +32,13 @@ const handleCapture = (result: ScanResult) => {
 }
 
 const savePass = async () => {
-    if (!everythingSet.value) return;
+    if (!dataIsValid.value) return;
 
     const savedPass = await passesStore.addPass(passData.value as Pass);
     await router.push(`pass/${savedPass.id}`);
 }
 
-const everythingSet = computed(() => {
+const dataIsValid = computed(() => {
     return scannedCard.value && passData.value.label && passData.value.color;
 });
 
@@ -69,7 +69,7 @@ const everythingSet = computed(() => {
                     <CodeViewer v-if="scannedCard" :data="scannedCard" />
                     <form @submit.prevent="savePass">
                         <PassDetailsEditor v-if="scannedCard" v-model="passData" />
-                        <ion-button type="submit" color="success" :disabled="!everythingSet">Opslaan</ion-button>
+                        <ion-button type="submit" color="success" :disabled="!dataIsValid">Opslaan</ion-button>
                     </form>
                 </template>
             </div>

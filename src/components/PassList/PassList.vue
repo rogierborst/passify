@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import PassListItem from '@/components/PassList/PassListItem.vue';
 import { usePassesStore } from '@/stores/passes';
+import { onBeforeMount } from 'vue';
 
 const passesStore = usePassesStore();
+onBeforeMount(() => passesStore.loadPasses());
 </script>
 
 <template>
