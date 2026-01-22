@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import JsBarcode from "jsbarcode";
-import { onMounted, useTemplateRef, watch } from "vue";
+import { onMounted, ref, useTemplateRef, watch } from "vue";
 
 const svgRef = useTemplateRef('canvas');
+const rotatedCount = ref<number>(0);
 
 interface Props {
     data?: string;
@@ -20,6 +21,13 @@ watch(props, () => {
     renderBarcode();
 });
 
+const rotate = () => {
+    rotatedCount.value = (rotatedCount.value + 1) % 4;
+
+    const angle = 90 * rotatedCount.value;
+    svgRef.value!.style.transform = `rotate(${angle}deg)`;
+}
+
 onMounted(() => renderBarcode());
 
 const renderBarcode = () => {
@@ -34,7 +42,7 @@ const renderBarcode = () => {
 </script>
 
 <template>
-<svg ref="canvas" />
+<svg ref="canvas" @click="rotate" />
 </template>
 
 <style scoped>
