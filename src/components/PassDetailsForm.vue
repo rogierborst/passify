@@ -11,7 +11,8 @@ const pass = defineModel<Pass>({ required: true });
             <ion-input label="Naam" v-model="pass.label" />
         </ion-item>
         <ion-item>
-            <ion-input label="color" type="color" v-model="pass.color" />
+            <!-- @TODO: use custom color picker -->
+            <ion-input label="color" :type="'color' as any" v-model="pass.color" />
         </ion-item>
     </ion-list>
 </template>

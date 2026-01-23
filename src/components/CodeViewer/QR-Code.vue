@@ -3,7 +3,7 @@ import {useQRCode} from '@vueuse/integrations/useQRCode'
 import {toRefs} from "vue";
 
 interface Props {
-    data?: string;
+    data: string;
     backgroundColor?: string;
     lineColor?: string;
 }
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { data } = toRefs(props);
 
-const qrCode = useQRCode(data, {
+const qrCode = useQRCode(data.value, {
     errorCorrectionLevel: 'H',
     margin: 2,
     color: {

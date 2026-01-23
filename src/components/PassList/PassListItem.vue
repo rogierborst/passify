@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Pass } from '@/services/pass-storage';
 import { useRouter } from 'vue-router';
 import { textColorForBackground } from '@/utils/color';
+import { Pass } from '@/stores/passes';
 
 const props = defineProps<{ pass: Pass }>();
 

@@ -3,7 +3,7 @@ import BarCode from '@/components/CodeViewer/BarCode.vue';
 import QRCode from '@/components/CodeViewer/QR-Code.vue';
 import { ScanResult } from '@/types/scan';
 import { computed } from 'vue';
-import { Pass } from '@/services/pass-storage';
+import { Pass } from '@/stores/passes';
 
 interface Props {
     data: ScanResult | Pass;
@@ -14,7 +14,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const format = computed(() => {
-    return props.data.dataType ?? props.data.format;
+    return 'dataType' in props.data ? props.data.dataType : props.data.format
 })
 </script>
 

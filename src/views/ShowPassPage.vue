@@ -40,7 +40,7 @@ const editing = ref<boolean>(false);
 
 onMounted(() => {
     const gesture = createGesture({
-        el: titleRef.value.$el,
+        el: titleRef.value!.$el,
         threshold: 0,
         gestureName: 'double-click',
         onStart () {
