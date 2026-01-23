@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, onIonViewWillEnter } from '@ionic/vue';
-import Scanner from '@/components/Scanner.vue';
+import NativeScanner from '@/components/NativeScanner.vue';
 import { ScanResult } from '@/types/scan';
 import { computed, ref, useTemplateRef } from 'vue';
 import PassDetailsForm from '@/components/PassDetailsForm.vue';
@@ -68,7 +68,7 @@ const dataIsValid = computed(() => {
                 </ion-header>
 
                 <div id="container">
-                    <Scanner @capture="handleCapture" />
+                    <NativeScanner @capture="handleCapture" />
                     <template v-if="scannedCard">
                         <CodeViewer v-if="scannedCard" :data="scannedCard" />
                         <form @submit.prevent="savePass">

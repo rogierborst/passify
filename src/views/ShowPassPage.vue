@@ -17,7 +17,6 @@ import { trashBinSharp } from 'ionicons/icons';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
-import PassDetailsForm from '@/components/PassDetailsForm.vue';
 import PassEditor from '@/components/PassEditor.vue';
 
 const router = useRouter();
