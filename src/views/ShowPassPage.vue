@@ -73,19 +73,19 @@ const removePass = async () => {
             </ion-toolbar>
         </ion-header>
 
-        <div ref="swipeableRef" class="swipeable-container">
-            <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-title>Kaart bewerken</ion-title>
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    <PassEditor v-model="pass" @save="editing = false" @cancel="editing=false" />
-                </ion-content>
-            </ion-modal>
+        <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-title>Kaart bewerken</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <PassEditor v-model="pass" @save="editing = false" @cancel="editing=false" />
+            </ion-content>
+        </ion-modal>
 
-            <ion-content :fullscreen="true" :style="{ '--pass-color': pass?.color }">
+        <ion-content :fullscreen="true" :style="{ '--pass-color': pass?.color }">
+            <div ref="swipeableRef" class="swipeable-container">
                 <ion-header collapse="condense">
                     <ion-toolbar>
                         <ion-title size="large">{{ pass?.label }}</ion-title>
@@ -98,31 +98,39 @@ const removePass = async () => {
                     </div>
                     <h1 v-else>GEEN PASS</h1>
                 </div>
-            </ion-content>
-        </div>
+            </div>
+        </ion-content>
     </ion-page>
 </template>
 
 <style scoped>
-.main {
-    max-width: 80vh;
-    max-height: 80vh;
-}
-
 ion-content {
     --background: var(--pass-color);
 }
 
+.swipeable-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .container {
-    min-height: 100%;
+    flex: 1;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    padding: 16px;
+    box-sizing: border-box;
 }
 
-.swipeable-container {
-    min-height: 100%;
+.main {
     width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

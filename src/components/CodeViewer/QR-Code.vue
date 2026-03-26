@@ -30,3 +30,12 @@ const qrCode = useQRCode(data.value, {
 <template>
     <img v-if="data" :src="qrCode" alt="QR Code" />
 </template>
+
+<style scoped>
+img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+</style>
