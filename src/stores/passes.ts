@@ -1,7 +1,8 @@
 // stores/passes.ts
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Preferences } from '@capacitor/preferences';
+import { useCategoriesStore } from '@/stores/categories';
 
 export interface Pass {
     format: string;
@@ -11,6 +12,7 @@ export interface Pass {
     id?: string;
     timestamp?: number;
     expires: string;
+    categoryId?: string;
 }
 
 const STORAGE_KEY = 'passes';
@@ -87,9 +89,16 @@ export const usePassesStore = defineStore('passes', () => {
         isLoaded.value = false;
     };
 
+    const filteredPasses = computed(() => {
+        const categoriesStore = useCategoriesStore();
+        if (!categoriesStore.selectedCategoryId) return passes.value;
+        return passes.value.filter(p => p.categoryId === categoriesStore.selectedCategoryId);
+    });
+
     return {
         // State
         passes,
+        filteredPasses,
         isLoading,
         isLoaded,
 

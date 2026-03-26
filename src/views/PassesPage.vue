@@ -7,13 +7,29 @@ import {
     IonPage,
     IonTitle,
     IonToolbar,
-    IonButton, IonIcon
+    IonButton, IonIcon,
+    IonSegment, IonSegmentButton, IonLabel,
+    onIonViewWillEnter,
 } from '@ionic/vue';
 import PassList from '@/components/PassList/PassList.vue';
 import { refreshCircleSharp } from 'ionicons/icons';
 import { usePassesStore } from '@/stores/passes';
+import { useCategoriesStore } from '@/stores/categories';
+import { computed } from 'vue';
 
 const passesStore = usePassesStore();
+const categoriesStore = useCategoriesStore();
+
+onIonViewWillEnter(() => categoriesStore.loadCategories());
+
+const showSegment = computed(() => categoriesStore.categories.length > 0);
+
+const handleSegmentChange = (event: CustomEvent) => {
+    const value = event.detail.value;
+    categoriesStore.selectedCategoryId = value === 'all' ? null : value;
+};
+
+const segmentValue = computed(() => categoriesStore.selectedCategoryId ?? 'all');
 </script>
 
 <template>
@@ -24,22 +40,30 @@ const passesStore = usePassesStore();
                 <ion-buttons slot="start">
                     <ion-menu-button color="primary"></ion-menu-button>
                 </ion-buttons>
-                <ion-title>{{ $route.params.id }}</ion-title>
+                <ion-title>Passes</ion-title>
                 <ion-buttons slot="end">
                     <ion-button color="primary" @click="passesStore.loadPasses">
                         <ion-icon :icon="refreshCircleSharp"></ion-icon>
                     </ion-button>
                 </ion-buttons>
             </ion-toolbar>
+            <ion-toolbar v-if="showSegment">
+                <ion-segment :value="segmentValue" @ionChange="handleSegmentChange" :scrollable="true">
+                    <ion-segment-button value="all">
+                        <ion-label>Alles</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button
+                        v-for="cat in categoriesStore.categories"
+                        :key="cat.id"
+                        :value="cat.id"
+                    >
+                        <ion-label>{{ cat.name }}</ion-label>
+                    </ion-segment-button>
+                </ion-segment>
+            </ion-toolbar>
         </ion-header>
 
         <ion-content :fullscreen="true">
-            <ion-header collapse="condense">
-                <ion-toolbar>
-                    <ion-title size="large">{{ $route.params.id }}</ion-title>
-                </ion-toolbar>
-            </ion-header>
-
             <div id="container">
                 <div class="main">
                     <PassList />
@@ -53,26 +77,6 @@ const passesStore = usePassesStore();
 <style scoped>
 #container {
     text-align: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-#container strong {
-    font-size: 20px;
-    line-height: 26px;
-}
-
-#container p {
-    font-size: 16px;
-    line-height: 22px;
-    color: #8c8c8c;
-    margin: 0;
-}
-
-#container a {
-    text-decoration: none;
+    padding: 1rem 0;
 }
 </style>

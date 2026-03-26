@@ -9,7 +9,7 @@ onBeforeMount(() => passesStore.loadPasses());
 
 <template>
     <div class="pass-list">
-        <PassListItem v-for="pass in passesStore.passes" :key="pass.id" :pass />
+        <PassListItem v-for="pass in passesStore.filteredPasses" :key="pass.id" :pass />
     </div>
 </template>
 

@@ -9,8 +9,10 @@ import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { providePageRefresh } from '@/composables/usePageRefresh';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
+import { useCategoriesStore } from '@/stores/categories';
 
 const passesStore = usePassesStore();
+const categoriesStore = useCategoriesStore();
 const router = useRouter();
 
 const swipeableRef = useTemplateRef('swipeableRef');
@@ -18,14 +20,18 @@ useSwipeToPage(swipeableRef, '/passes');
 
 const scannedCard = ref<ScanResult>();
 const passData = ref<Partial<Pass>>({
-    color: '#145920'
+    color: '#145920',
+    categoryId: categoriesStore.selectedCategoryId ?? undefined,
 });
 
 
 providePageRefresh();
 const resetData = () => {
     scannedCard.value = undefined;
-    passData.value = { color: '#145920' };
+    passData.value = {
+        color: '#145920',
+        categoryId: categoriesStore.selectedCategoryId ?? undefined,
+    };
 };
 onIonViewWillEnter(() => resetData());
 
