@@ -2,14 +2,26 @@
 import {
     IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
     IonButtons, IonMenuButton, IonList, IonItem, IonLabel,
-    IonButton, IonIcon, alertController, onIonViewWillEnter,
+    IonButton, IonIcon, IonNote, alertController, onIonViewWillEnter,
 } from '@ionic/vue';
 import { add, createOutline } from 'ionicons/icons';
 import { useCategoriesStore } from '@/stores/categories';
+import { usePassesStore } from '@/stores/passes';
+import { useRouter } from 'vue-router';
 
 const categoriesStore = useCategoriesStore();
+const passesStore = usePassesStore();
+const router = useRouter();
 
-onIonViewWillEnter(() => categoriesStore.loadCategories());
+const navigateToCategory = (id: string) => {
+    categoriesStore.selectedCategoryId = id;
+    router.push('/passes');
+};
+
+onIonViewWillEnter(() => {
+    categoriesStore.loadCategories();
+    passesStore.loadPasses();
+});
 
 const promptAdd = async () => {
     const alert = await alertController.create({
@@ -68,9 +80,10 @@ const promptRename = async (id: string, currentName: string) => {
             </ion-header>
 
             <ion-list v-if="categoriesStore.categories.length">
-                <ion-item v-for="category in categoriesStore.categories" :key="category.id">
+                <ion-item v-for="category in categoriesStore.categories" :key="category.id" button @click="navigateToCategory(category.id)">
                     <ion-label>{{ category.name }}</ion-label>
-                    <ion-button fill="clear" slot="end" @click="promptRename(category.id, category.name)">
+                    <ion-note slot="end">{{ passesStore.passes.filter(p => p.categoryId === category.id).length }}</ion-note>
+                    <ion-button fill="clear" slot="end" @click.stop="promptRename(category.id, category.name)">
                         <ion-icon :icon="createOutline" />
                     </ion-button>
                 </ion-item>
