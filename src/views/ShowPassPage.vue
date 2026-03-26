@@ -9,7 +9,7 @@ import {
     IonToolbar,
     IonPage,
     IonHeader,
-    IonIcon, onIonViewDidEnter,
+    IonIcon, onIonViewDidEnter, alertController,
 } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, useTemplateRef } from 'vue';
@@ -37,8 +37,20 @@ useSwipeToPage(swipeableRef, '/passes');
 const editing = ref<boolean>(false);
 
 const removePass = async () => {
-    await passesStore.deletePass(route.params.id as string);
-    await router.push('/passes');
+    const alert = await alertController.create({
+        header: 'Kaart verwijderen',
+        message: `Weet je zeker dat je "${pass.value?.label}" wilt verwijderen?`,
+        buttons: [
+            { text: 'Annuleren', role: 'cancel' },
+            { text: 'Verwijderen', role: 'confirm' },
+        ],
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    if (role === 'confirm') {
+        await passesStore.deletePass(route.params.id as string);
+        await router.push('/passes');
+    }
 }
 </script>
 
