@@ -64,8 +64,12 @@ export const useCategoriesStore = defineStore('categories', () => {
         return getCategoryById(selectedCategoryId.value) ?? null;
     });
 
+    const sortedCategories = computed(() =>
+        [...categories.value].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+    );
+
     return {
-        categories,
+        categories: sortedCategories,
         selectedCategoryId,
         selectedCategory,
         isLoaded,

@@ -9,11 +9,11 @@ import {
     IonToolbar,
     IonPage,
     IonHeader,
-    IonIcon, onIonViewDidEnter, createGesture
+    IonIcon, onIonViewDidEnter,
 } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, useTemplateRef } from 'vue';
-import { trashBinSharp } from 'ionicons/icons';
+import { trashBinSharp, createOutline } from 'ionicons/icons';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
@@ -34,31 +34,7 @@ onMounted(() => fetchPass());
 const swipeableRef = useTemplateRef('swipeableRef');
 useSwipeToPage(swipeableRef, '/passes');
 
-const titleRef = useTemplateRef('titleRef');
-let lastOnStart = 0;
 const editing = ref<boolean>(false);
-
-onMounted(() => {
-    const gesture = createGesture({
-        el: titleRef.value!.$el,
-        threshold: 0,
-        gestureName: 'double-click',
-        onStart () {
-            console.log('yolo');
-            const now = Date.now();
-
-            if (Math.abs(now - lastOnStart) <= 500) {
-                console.log('go go go');
-                editing.value = true;
-                lastOnStart = 0;
-            } else {
-                lastOnStart = now;
-            }
-        }
-    });
-
-    gesture.enable();
-});
 
 const removePass = async () => {
     await passesStore.deletePass(route.params.id as string);
@@ -69,12 +45,15 @@ const removePass = async () => {
 <template>
     <ion-page>
         <ion-header :translucent="true">
-            <ion-toolbar ref="titleRef">
+            <ion-toolbar>
                 <ion-buttons slot="start">
                     <ion-menu-button color="primary" />
                 </ion-buttons>
                 <ion-title>{{ pass?.label }}</ion-title>
                 <ion-buttons slot="end">
+                    <ion-button fill="clear" @click="editing = true">
+                        <ion-icon :icon="createOutline" />
+                    </ion-button>
                     <ion-button color="danger" @click="removePass">
                         <ion-icon :icon="trashBinSharp" />
                     </ion-button>
