@@ -10,6 +10,7 @@ export interface Pass {
     color: string;
     id?: string;
     timestamp?: number;
+    expires: string;
 }
 
 const STORAGE_KEY = 'passes';
