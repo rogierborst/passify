@@ -12,12 +12,15 @@ import {
     IonIcon, onIonViewDidEnter, alertController,
 } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 import { trashBinSharp, createOutline } from 'ionicons/icons';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
 import PassEditor from '@/components/PassEditor.vue';
+import { format, formatDistanceToNow, parseISO, isPast } from 'date-fns';
+import { nl } from 'date-fns/locale';
+import { textColorForBackground } from '@/utils/color';
 
 const router = useRouter();
 const route = useRoute();
@@ -35,6 +38,23 @@ const swipeableRef = useTemplateRef('swipeableRef');
 useSwipeToPage(swipeableRef, '/passes');
 
 const editing = ref<boolean>(false);
+
+const expiryDate = computed(() => {
+    if (!pass.value?.expires) return null;
+    return parseISO(pass.value.expires);
+});
+
+const expiryLabel = computed(() => {
+    if (!expiryDate.value) return null;
+    return format(expiryDate.value, 'd MMMM yyyy', { locale: nl });
+});
+
+const expiryDistance = computed(() => {
+    if (!expiryDate.value) return null;
+    const expired = isPast(expiryDate.value);
+    const distance = formatDistanceToNow(expiryDate.value, { locale: nl, addSuffix: true });
+    return expired ? `Verlopen ${distance}` : `Verloopt ${distance}`;
+});
 
 const removePass = async () => {
     const alert = await alertController.create({
@@ -92,6 +112,11 @@ const removePass = async () => {
                     </ion-toolbar>
                 </ion-header>
 
+                <div v-if="expiryLabel && pass" class="expiry-banner" :style="{ color: textColorForBackground(pass.color) }">
+                    <span class="expiry-date">{{ expiryLabel }}</span>
+                    <span class="expiry-distance">{{ expiryDistance }}</span>
+                </div>
+
                 <div class="container">
                     <div class="main" v-if="pass">
                         <CodeViewer :data="pass" />
@@ -132,5 +157,23 @@ ion-content {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.expiry-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 16px 4px;
+    gap: 2px;
+}
+
+.expiry-date {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.expiry-distance {
+    font-size: 0.8rem;
+    opacity: 0.7;
 }
 </style>
