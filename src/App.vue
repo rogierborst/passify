@@ -23,13 +23,13 @@ onBeforeMount(() => categoriesStore.loadCategories());
 const selectedIndex = ref(0);
 const appPages = [
     {
-        title: 'Passes',
+        title: 'Passen',
         url: '/passes',
         iosIcon: cardOutline,
         mdIcon: cardSharp
     },
     {
-        title: 'Add Pass',
+        title: 'Pas toevoegen',
         url: '/add',
         iosIcon: barcodeOutline,
         mdIcon: barcode
@@ -59,7 +59,7 @@ const selectCategory = (categoryId: string | null) => {
                 <ion-content>
                     <ion-list id="inbox-list">
                         <ion-list-header>Passify</ion-list-header>
-                        <ion-note>All your passes in one place</ion-note>
+                        <ion-note>Al je pasjes op één plek</ion-note>
 
                         <ion-menu-toggle :auto-hide="false" v-for="(page, i) in appPages" :key="i">
                             <ion-item
