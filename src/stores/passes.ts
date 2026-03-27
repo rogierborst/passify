@@ -13,6 +13,7 @@ export interface Pass {
     timestamp?: number;
     expires: string;
     categoryId?: string;
+    notes?: string;
 }
 
 const STORAGE_KEY = 'passes';

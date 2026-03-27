@@ -13,11 +13,12 @@ import {
 } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, onMounted, ref, useTemplateRef } from 'vue';
-import { trashBinSharp, createOutline } from 'ionicons/icons';
+import { trashBinSharp, createOutline, documentTextOutline } from 'ionicons/icons';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
 import PassEditor from '@/components/PassEditor.vue';
+import NotesViewer from '@/components/NotesViewer.vue';
 import { format, formatDistanceToNow, parseISO, isPast } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { textColorForBackground } from '@/utils/color';
@@ -38,6 +39,7 @@ const swipeableRef = useTemplateRef('swipeableRef');
 useSwipeToPage(swipeableRef, '/passes');
 
 const editing = ref<boolean>(false);
+const viewingNotes = ref<boolean>(false);
 
 const expiryDate = computed(() => {
     if (!pass.value?.expires) return null;
@@ -83,6 +85,9 @@ const removePass = async () => {
                 </ion-buttons>
                 <ion-title>{{ pass?.label }}</ion-title>
                 <ion-buttons slot="end">
+                    <ion-button fill="clear" @click="viewingNotes = true">
+                        <ion-icon :icon="documentTextOutline" />
+                    </ion-button>
                     <ion-button fill="clear" @click="editing = true">
                         <ion-icon :icon="createOutline" />
                     </ion-button>
@@ -92,6 +97,20 @@ const removePass = async () => {
                 </ion-buttons>
             </ion-toolbar>
         </ion-header>
+
+        <ion-modal :is-open="viewingNotes" @willDismiss="viewingNotes = false">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-title>Notitie</ion-title>
+                    <ion-buttons slot="end">
+                        <ion-button @click="viewingNotes = false">Sluiten</ion-button>
+                    </ion-buttons>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <NotesViewer v-if="pass" v-model="pass" />
+            </ion-content>
+        </ion-modal>
 
         <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
             <ion-header>
