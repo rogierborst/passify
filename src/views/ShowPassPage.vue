@@ -34,7 +34,6 @@ const fetchPass = () => {
 onIonViewDidEnter(() => fetchPass());
 onMounted(() => fetchPass());
 
-
 const swipeableRef = useTemplateRef('swipeableRef');
 useSwipeToPage(swipeableRef, '/passes');
 
@@ -85,7 +84,7 @@ const removePass = async () => {
                 </ion-buttons>
                 <ion-title>{{ pass?.label }}</ion-title>
                 <ion-buttons slot="end">
-                    <ion-button fill="clear" @click="viewingNotes = true">
+                    <ion-button fill="clear" @click="viewingNotes = !viewingNotes">
                         <ion-icon :icon="documentTextOutline" />
                     </ion-button>
                     <ion-button fill="clear" @click="editing = true">
@@ -97,25 +96,6 @@ const removePass = async () => {
                 </ion-buttons>
             </ion-toolbar>
         </ion-header>
-
-        <ion-modal
-            :is-open="viewingNotes"
-            :breakpoints="[0, 0.4, 0.75]"
-            :initial-breakpoint="0.4"
-            @willDismiss="viewingNotes = false"
-        >
-            <ion-header>
-                <ion-toolbar>
-                    <ion-title>Notitie</ion-title>
-                    <ion-buttons slot="end">
-                        <ion-button @click="viewingNotes = false">Sluiten</ion-button>
-                    </ion-buttons>
-                </ion-toolbar>
-            </ion-header>
-            <ion-content>
-                <NotesViewer v-if="pass" v-model="pass" />
-            </ion-content>
-        </ion-modal>
 
         <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
             <ion-header>
@@ -147,6 +127,12 @@ const removePass = async () => {
                     </div>
                     <h1 v-else>GEEN PASS</h1>
                 </div>
+
+                <Transition name="notes">
+                    <div v-if="viewingNotes && pass" class="notes-section">
+                        <NotesViewer v-model="pass" />
+                    </div>
+                </Transition>
             </div>
         </ion-content>
     </ion-page>
@@ -181,6 +167,12 @@ ion-content {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.notes-section {
+    margin: 0 16px 16px;
+    border-radius: 12px;
+    background: rgba(var(--ion-background-color-rgb), 0.85);
 }
 
 .expiry-banner {
