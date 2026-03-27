@@ -38,6 +38,7 @@ const cancel = () => {
                 v-model="localNote"
                 :auto-grow="true"
                 class="note-textarea"
+                placeholder="Voeg een notitie toe..."
             />
             <ion-buttons class="actions">
                 <ion-button fill="outline" color="medium" @click="cancel">Annuleren</ion-button>

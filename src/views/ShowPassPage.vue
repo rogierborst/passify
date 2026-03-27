@@ -98,7 +98,12 @@ const removePass = async () => {
             </ion-toolbar>
         </ion-header>
 
-        <ion-modal :is-open="viewingNotes" @willDismiss="viewingNotes = false">
+        <ion-modal
+            :is-open="viewingNotes"
+            :breakpoints="[0, 0.4, 0.75]"
+            :initial-breakpoint="0.4"
+            @willDismiss="viewingNotes = false"
+        >
             <ion-header>
                 <ion-toolbar>
                     <ion-title>Notitie</ion-title>
