@@ -13,8 +13,12 @@ import {
     IonRouterOutlet,
     IonSplitPane
 } from '@ionic/vue';
-import { ref } from 'vue';
-import { barcode, barcodeOutline, cardOutline, cardSharp } from 'ionicons/icons';
+import { onBeforeMount, ref } from 'vue';
+import { barcode, barcodeOutline, cardOutline, cardSharp, pricetagOutline, pricetagSharp } from 'ionicons/icons';
+import { useCategoriesStore } from '@/stores/categories';
+
+const categoriesStore = useCategoriesStore();
+onBeforeMount(() => categoriesStore.loadCategories());
 
 const selectedIndex = ref(0);
 const appPages = [
@@ -30,12 +34,22 @@ const appPages = [
         iosIcon: barcodeOutline,
         mdIcon: barcode
     },
+    {
+        title: 'Categorieën',
+        url: '/categories',
+        iosIcon: pricetagOutline,
+        mdIcon: pricetagSharp
+    },
 ];
 
 const path = window.location.pathname;
 if (path !== undefined) {
     selectedIndex.value = appPages.findIndex((page) => page.url.toLowerCase() === path.toLowerCase());
 }
+
+const selectCategory = (categoryId: string | null) => {
+    categoriesStore.selectedCategoryId = categoryId;
+};
 </script>
 
 <template>
@@ -59,6 +73,21 @@ if (path !== undefined) {
                             >
                                 <ion-icon aria-hidden="true" slot="start" :ios="page.iosIcon" :md="page.mdIcon" />
                                 <ion-label>{{ page.title }}</ion-label>
+                            </ion-item>
+                        </ion-menu-toggle>
+                    </ion-list>
+
+                    <ion-list v-if="categoriesStore.categories.length" id="categories-list">
+                        <ion-list-header>Categorieën</ion-list-header>
+                        <ion-menu-toggle :auto-hide="false" v-for="cat in categoriesStore.categories" :key="cat.id">
+                            <ion-item
+                                router-direction="root"
+                                router-link="/passes"
+                                lines="none"
+                                :detail="false"
+                                @click="selectCategory(cat.id)"
+                            >
+                                <ion-label>{{ cat.name }}</ion-label>
                             </ion-item>
                         </ion-menu-toggle>
                     </ion-list>

@@ -9,15 +9,18 @@ import {
     IonToolbar,
     IonPage,
     IonHeader,
-    IonIcon, onIonViewDidEnter, createGesture
+    IonIcon, onIonViewDidEnter, alertController,
 } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref, useTemplateRef } from 'vue';
-import { trashBinSharp } from 'ionicons/icons';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
+import { trashBinSharp, createOutline } from 'ionicons/icons';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { useSwipeToPage } from '@/composables/useSwipeToPage';
 import PassEditor from '@/components/PassEditor.vue';
+import { format, formatDistanceToNow, parseISO, isPast } from 'date-fns';
+import { nl } from 'date-fns/locale';
+import { textColorForBackground } from '@/utils/color';
 
 const router = useRouter();
 const route = useRoute();
@@ -34,47 +37,55 @@ onMounted(() => fetchPass());
 const swipeableRef = useTemplateRef('swipeableRef');
 useSwipeToPage(swipeableRef, '/passes');
 
-const titleRef = useTemplateRef('titleRef');
-let lastOnStart = 0;
 const editing = ref<boolean>(false);
 
-onMounted(() => {
-    const gesture = createGesture({
-        el: titleRef.value!.$el,
-        threshold: 0,
-        gestureName: 'double-click',
-        onStart () {
-            console.log('yolo');
-            const now = Date.now();
+const expiryDate = computed(() => {
+    if (!pass.value?.expires) return null;
+    return parseISO(pass.value.expires);
+});
 
-            if (Math.abs(now - lastOnStart) <= 500) {
-                console.log('go go go');
-                editing.value = true;
-                lastOnStart = 0;
-            } else {
-                lastOnStart = now;
-            }
-        }
-    });
+const expiryLabel = computed(() => {
+    if (!expiryDate.value) return null;
+    return format(expiryDate.value, 'd MMMM yyyy', { locale: nl });
+});
 
-    gesture.enable();
+const expiryDistance = computed(() => {
+    if (!expiryDate.value) return null;
+    const expired = isPast(expiryDate.value);
+    const distance = formatDistanceToNow(expiryDate.value, { locale: nl, addSuffix: true });
+    return expired ? `Verlopen ${distance}` : `Verloopt ${distance}`;
 });
 
 const removePass = async () => {
-    await passesStore.deletePass(route.params.id as string);
-    await router.push('/passes');
+    const alert = await alertController.create({
+        header: 'Kaart verwijderen',
+        message: `Weet je zeker dat je "${pass.value?.label}" wilt verwijderen?`,
+        buttons: [
+            { text: 'Annuleren', role: 'cancel' },
+            { text: 'Verwijderen', role: 'confirm' },
+        ],
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    if (role === 'confirm') {
+        await passesStore.deletePass(route.params.id as string);
+        await router.push('/passes');
+    }
 }
 </script>
 
 <template>
     <ion-page>
         <ion-header :translucent="true">
-            <ion-toolbar ref="titleRef">
+            <ion-toolbar>
                 <ion-buttons slot="start">
                     <ion-menu-button color="primary" />
                 </ion-buttons>
                 <ion-title>{{ pass?.label }}</ion-title>
                 <ion-buttons slot="end">
+                    <ion-button fill="clear" @click="editing = true">
+                        <ion-icon :icon="createOutline" />
+                    </ion-button>
                     <ion-button color="danger" @click="removePass">
                         <ion-icon :icon="trashBinSharp" />
                     </ion-button>
@@ -82,24 +93,29 @@ const removePass = async () => {
             </ion-toolbar>
         </ion-header>
 
-        <div ref="swipeableRef" class="swipeable-container">
-            <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-title>Kaart bewerken</ion-title>
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    <PassEditor v-model="pass" @save="editing = false" @cancel="editing=false" />
-                </ion-content>
-            </ion-modal>
+        <ion-modal ref="editor" :is-open="editing" @willDismiss="editing = false">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-title>Kaart bewerken</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <PassEditor v-model="pass" @save="editing = false" @cancel="editing=false" />
+            </ion-content>
+        </ion-modal>
 
-            <ion-content :fullscreen="true" :style="{ '--pass-color': pass?.color }">
+        <ion-content :fullscreen="true" :style="{ '--pass-color': pass?.color }">
+            <div ref="swipeableRef" class="swipeable-container">
                 <ion-header collapse="condense">
                     <ion-toolbar>
                         <ion-title size="large">{{ pass?.label }}</ion-title>
                     </ion-toolbar>
                 </ion-header>
+
+                <div v-if="expiryLabel && pass" class="expiry-banner" :style="{ color: textColorForBackground(pass.color) }">
+                    <span class="expiry-date">{{ expiryLabel }}</span>
+                    <span class="expiry-distance">{{ expiryDistance }}</span>
+                </div>
 
                 <div class="container">
                     <div class="main" v-if="pass">
@@ -107,31 +123,57 @@ const removePass = async () => {
                     </div>
                     <h1 v-else>GEEN PASS</h1>
                 </div>
-            </ion-content>
-        </div>
+            </div>
+        </ion-content>
     </ion-page>
 </template>
 
 <style scoped>
-.main {
-    max-width: 80vh;
-    max-height: 80vh;
-}
-
 ion-content {
     --background: var(--pass-color);
 }
 
-.container {
-    min-height: 100%;
+.swipeable-container {
+    height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.main {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.swipeable-container {
-    min-height: 100%;
-    width: 100%;
+.expiry-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 16px 4px;
+    gap: 2px;
+}
+
+.expiry-date {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.expiry-distance {
+    font-size: 0.8rem;
+    opacity: 0.7;
 }
 </style>
