@@ -4,6 +4,7 @@ import { textColorForBackground } from '@/utils/color';
 import { Pass } from '@/stores/passes';
 import { computed } from 'vue';
 import { format, parseISO } from 'date-fns';
+import { nl } from 'date-fns/locale';
 
 const props = defineProps<{ pass: Pass }>();
 
@@ -12,7 +13,7 @@ const showPass = () => router.push(`/pass/${ props.pass.id }`);
 
 const expiryLabel = computed(() => {
     if (!props.pass.expires) return null;
-    return format(parseISO(props.pass.expires), 'd MMM yyyy');
+    return format(parseISO(props.pass.expires), 'd MMM yyyy', { locale: nl });
 });
 </script>
 
