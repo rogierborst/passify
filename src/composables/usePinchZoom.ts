@@ -1,6 +1,6 @@
 import { ref, computed, watch, onUnmounted, type Ref } from 'vue';
 
-const MIN_SCALE = 1;
+const MIN_SCALE = 0.5;
 const MAX_SCALE = 4;
 const DOUBLE_TAP_MS = 300;
 
@@ -101,7 +101,7 @@ export function usePinchZoom(container: Ref<HTMLElement | null | undefined>) {
     function onTouchEnd(e: TouchEvent) {
         if (e.touches.length === 0) {
             isPinching = false;
-            if (scale.value <= 1.05) reset();
+            if (scale.value > 0.9 && scale.value < 1.1) reset();
         } else if (e.touches.length === 1 && isPinching) {
             // One finger lifted during pinch — don't accidentally start panning
             isPinching = false;
