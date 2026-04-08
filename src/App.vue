@@ -11,14 +11,20 @@ import {
     IonMenuToggle,
     IonNote,
     IonRouterOutlet,
-    IonSplitPane
+    IonSplitPane,
+    IonToggle
 } from '@ionic/vue';
 import { onBeforeMount, ref } from 'vue';
-import { barcode, barcodeOutline, cardOutline, cardSharp, pricetagOutline, pricetagSharp } from 'ionicons/icons';
+import { barcode, barcodeOutline, cardOutline, cardSharp, moonOutline, pricetagOutline, pricetagSharp } from 'ionicons/icons';
 import { useCategoriesStore } from '@/stores/categories';
+import { useThemeStore } from '@/stores/theme';
 
 const categoriesStore = useCategoriesStore();
-onBeforeMount(() => categoriesStore.loadCategories());
+const themeStore = useThemeStore();
+onBeforeMount(() => {
+    categoriesStore.loadCategories();
+    themeStore.load();
+});
 
 const selectedIndex = ref(0);
 const appPages = [
@@ -90,6 +96,13 @@ const selectCategory = (categoryId: string | null) => {
                                 <ion-label>{{ cat.name }}</ion-label>
                             </ion-item>
                         </ion-menu-toggle>
+                    </ion-list>
+                    <ion-list id="settings-list">
+                        <ion-item lines="none" :detail="false">
+                            <ion-icon aria-hidden="true" slot="start" :icon="moonOutline" />
+                            <ion-label>Donkere modus</ion-label>
+                            <ion-toggle slot="end" :checked="themeStore.isDark" @ion-change="themeStore.toggle()" />
+                        </ion-item>
                     </ion-list>
                 </ion-content>
             </ion-menu>
