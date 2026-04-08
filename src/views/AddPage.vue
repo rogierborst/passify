@@ -2,21 +2,17 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, onIonViewWillEnter } from '@ionic/vue';
 import NativeScanner from '@/components/NativeScanner.vue';
 import { ScanResult } from '@/types/scan';
-import { computed, ref, useTemplateRef } from 'vue';
+import { computed, ref } from 'vue';
 import PassDetailsForm from '@/components/PassDetailsForm.vue';
 import { useRouter } from 'vue-router';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
 import { providePageRefresh } from '@/composables/usePageRefresh';
-import { useSwipeToPage } from '@/composables/useSwipeToPage';
 import { useCategoriesStore } from '@/stores/categories';
 
 const passesStore = usePassesStore();
 const categoriesStore = useCategoriesStore();
 const router = useRouter();
-
-const swipeableRef = useTemplateRef('swipeableRef');
-useSwipeToPage(swipeableRef, '/passes');
 
 const scannedCard = ref<ScanResult>();
 const passData = ref<Partial<Pass>>({
@@ -66,7 +62,7 @@ const dataIsValid = computed(() => {
         </ion-header>
 
         <ion-content :fullscreen="true">
-            <div ref="swipeableRef" class="swipeable-container">
+            <div class="swipeable-container">
                 <ion-header collapse="condense">
                     <ion-toolbar>
                         <ion-title size="large">Toevoegen</ion-title>

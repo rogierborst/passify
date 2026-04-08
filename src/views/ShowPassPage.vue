@@ -12,11 +12,10 @@ import {
     IonIcon, onIonViewDidEnter, alertController,
 } from '@ionic/vue';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onMounted, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { trashBinSharp, createOutline, documentTextOutline } from 'ionicons/icons';
 import CodeViewer from '@/components/CodeViewer/CodeViewer.vue';
 import { Pass, usePassesStore } from '@/stores/passes';
-import { useSwipeToPage } from '@/composables/useSwipeToPage';
 import PassEditor from '@/components/PassEditor.vue';
 import NotesViewer from '@/components/NotesViewer.vue';
 import { format, formatDistanceToNow, parseISO, isPast } from 'date-fns';
@@ -33,9 +32,6 @@ const fetchPass = () => {
 }
 onIonViewDidEnter(() => fetchPass());
 onMounted(() => fetchPass());
-
-const swipeableRef = useTemplateRef('swipeableRef');
-useSwipeToPage(swipeableRef, '/passes');
 
 const editing = ref<boolean>(false);
 const viewingNotes = ref<boolean>(false);
@@ -109,7 +105,7 @@ const removePass = async () => {
         </ion-modal>
 
         <ion-content :fullscreen="true" :style="{ '--pass-color': pass?.color }">
-            <div ref="swipeableRef" class="swipeable-container">
+            <div class="swipeable-container">
                 <ion-header collapse="condense">
                     <ion-toolbar>
                         <ion-title size="large">{{ pass?.label }}</ion-title>
@@ -156,7 +152,6 @@ ion-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
     padding: 16px;
     box-sizing: border-box;
 }
