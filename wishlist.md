@@ -1,4 +1,0 @@
-- [ ] Categorieen
-- [ ] Sorteren op alfabet
-- [ ] Meerdere codes onder 1 "pass" (Eftelingkaartjes bijv.)
-- [ ] Notities (vervaldatum / bedrag op cadeaukaart)

@@ -1,0 +1,6 @@
+- [x] Categorieen
+- [x] Notities (vervaldatum / bedrag op cadeaukaart)
+- [ ] Sorteren op alfabet
+- [ ] Meerdere codes onder 1 "pass" (Eftelingkaartjes bijv.)
+- [ ] Betere color picker
+- [ ] Notificaties voor verlopen passen
