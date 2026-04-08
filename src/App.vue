@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { IonApp, IonRouterOutlet, useIonRouter } from '@ionic/vue';
 import { onMounted, onUnmounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { App } from '@capacitor/app';
 import MainMenu from '@/components/MainMenu.vue';
 
 const ionRouter = useIonRouter();
+const route = useRoute();
+const router = useRouter();
+
 let backButtonListener: { remove: () => void } | null = null;
 onMounted(async () => {
     backButtonListener = await App.addListener('backButton', () => {
         if (ionRouter.canGoBack()) {
             ionRouter.back();
+        } else if (route.path !== '/passes') {
+            router.replace('/passes');
         } else {
             App.exitApp();
         }
