@@ -3,6 +3,7 @@ import { ref, computed, watch, onUnmounted, type Ref } from 'vue';
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 4;
 const DOUBLE_TAP_MS = 300;
+const ROTATION_THRESHOLD_DEG = 20;
 
 export function useTransformGestures(container: Ref<HTMLElement | null | undefined>) {
     const scale = ref(1);
@@ -111,9 +112,13 @@ export function useTransformGestures(container: Ref<HTMLElement | null | undefin
             panX.value = startMidX - contentX * newScale;
             panY.value = startMidY - contentY * newScale;
 
-            // Apply rotation delta freely during gesture
+            // Apply rotation only after exceeding the dead zone threshold
             const currentAngle = angle(e.touches[0], e.touches[1]);
-            rotation.value = startRotation + (currentAngle - startAngle);
+            const rawDelta = currentAngle - startAngle;
+            const rotDelta = Math.abs(rawDelta) > ROTATION_THRESHOLD_DEG
+                ? rawDelta - Math.sign(rawDelta) * ROTATION_THRESHOLD_DEG
+                : 0;
+            rotation.value = startRotation + rotDelta;
         } else if (e.touches.length === 1 && !isPinching) {
             panX.value = e.touches[0].clientX - startTouchX;
             panY.value = e.touches[0].clientY - startTouchY;
