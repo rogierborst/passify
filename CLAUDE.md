@@ -129,6 +129,11 @@ ionic cap run android -l --external  # Live reload on device (needs JAVA_HOME)
 - `vue/no-deprecated-slot-attribute` — disabled
 - console/debugger warnings in production only
 
+## Naming Style
+
+- Avoid single-letter variable names. Use descriptive names that make intent clear.
+- Exception: universally understood single-letter conventions are fine — `i` in loops, `e` for events, `a`/`b` in sort comparators.
+
 ## Key Constraints
 
 - **Mobile-first**: interactions must work with touch; add haptic feedback (`@capacitor/haptics`) for important actions.

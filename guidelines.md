@@ -49,6 +49,7 @@ This document outlines the architecture, patterns, and best practices used in th
 - **Views**: PascalCase with `Page` suffix (e.g., `PassesPage.vue`).
 - **Stores**: camelCase with `Store` suffix (e.g., `passesStore`).
 - **Composables**: camelCase with `use` prefix (e.g., `usePassesStore`).
+- **Variables**: camelCase (e.g., `passId`) and avoid single-letter names unless widespread (e.g., `i` in loops).
 
 ## 📱 Platform Considerations
 - **Capacitor**: Use `@capacitor/*` plugins for native functionality.

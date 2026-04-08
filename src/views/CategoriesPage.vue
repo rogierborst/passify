@@ -4,7 +4,7 @@ import {
     IonButtons, IonMenuButton, IonList, IonItem, IonLabel,
     IonButton, IonIcon, IonNote, alertController, onIonViewWillEnter,
 } from '@ionic/vue';
-import { add, createOutline } from 'ionicons/icons';
+import { add, createOutline, trashBinOutline } from 'ionicons/icons';
 import { useCategoriesStore } from '@/stores/categories';
 import { usePassesStore } from '@/stores/passes';
 import { useRouter } from 'vue-router';
@@ -36,6 +36,29 @@ const promptAdd = async () => {
     const { data, role } = await alert.onDidDismiss();
     if (role === 'confirm' && data?.values?.name?.trim()) {
         await categoriesStore.addCategory(data.values.name.trim());
+    }
+};
+
+const promptDelete = async (id: string, name: string) => {
+    const count = passesStore.passes.filter(pass => pass.categoryId === id).length;
+    const message = count > 0
+        ? count === 1
+            ? `"${name}" verwijderen? 1 pas raakt zijn categorie kwijt.`
+            : `"${name}" verwijderen? ${count} passen raken hun categorie kwijt.`
+        : `"${name}" verwijderen?`;
+    const alert = await alertController.create({
+        header: 'Categorie verwijderen',
+        message,
+        buttons: [
+            { text: 'Annuleren', role: 'cancel' },
+            { text: 'Verwijderen', role: 'confirm' },
+        ],
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    if (role === 'confirm') {
+        await passesStore.clearCategory(id);
+        await categoriesStore.deleteCategory(id);
     }
 };
 
@@ -85,6 +108,9 @@ const promptRename = async (id: string, currentName: string) => {
                     <ion-note slot="end">{{ passesStore.passes.filter(p => p.categoryId === category.id).length }}</ion-note>
                     <ion-button fill="clear" slot="end" @click.stop="promptRename(category.id, category.name)">
                         <ion-icon :icon="createOutline" />
+                    </ion-button>
+                    <ion-button fill="clear" color="danger" slot="end" @click.stop="promptDelete(category.id, category.name)">
+                        <ion-icon :icon="trashBinOutline" />
                     </ion-button>
                 </ion-item>
             </ion-list>

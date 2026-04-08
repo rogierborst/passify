@@ -84,6 +84,13 @@ export const usePassesStore = defineStore('passes', () => {
         return passes.value.find(p => p.id === id);
     };
 
+    const clearCategory = async (categoryId: string) => {
+        passes.value = passes.value.map(pass =>
+            pass.categoryId === categoryId ? { ...pass, categoryId: undefined } : pass
+        );
+        await saveToStorage(passes.value);
+    };
+
     const clearAll = async () => {
         await Preferences.remove({ key: STORAGE_KEY });
         passes.value = [];
@@ -109,6 +116,7 @@ export const usePassesStore = defineStore('passes', () => {
         updatePass,
         deletePass,
         getPassById,
+        clearCategory,
         clearAll,
     };
 });

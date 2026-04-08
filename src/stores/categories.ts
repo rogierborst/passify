@@ -55,6 +55,12 @@ export const useCategoriesStore = defineStore('categories', () => {
         }
     };
 
+    const deleteCategory = async (id: string) => {
+        categories.value = categories.value.filter(category => category.id !== id);
+        if (selectedCategoryId.value === id) selectedCategoryId.value = null;
+        await saveToStorage(categories.value);
+    };
+
     const getCategoryById = (id: string) => {
         return categories.value.find(c => c.id === id);
     };
@@ -77,6 +83,7 @@ export const useCategoriesStore = defineStore('categories', () => {
         loadCategories,
         addCategory,
         updateCategory,
+        deleteCategory,
         getCategoryById,
     };
 });
