@@ -70,12 +70,13 @@ export const useCategoriesStore = defineStore('categories', () => {
         return getCategoryById(selectedCategoryId.value) ?? null;
     });
 
-    const sortedCategories = computed(() =>
-        [...categories.value].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
-    );
+    const reorderCategories = async (newOrder: Category[]) => {
+        categories.value = newOrder;
+        await saveToStorage(categories.value);
+    };
 
     return {
-        categories: sortedCategories,
+        categories,
         selectedCategoryId,
         selectedCategory,
         isLoaded,
@@ -84,6 +85,7 @@ export const useCategoriesStore = defineStore('categories', () => {
         addCategory,
         updateCategory,
         deleteCategory,
+        reorderCategories,
         getCategoryById,
     };
 });

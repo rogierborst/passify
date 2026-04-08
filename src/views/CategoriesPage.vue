@@ -5,9 +5,10 @@ import {
     IonButton, IonIcon, IonNote, alertController, onIonViewWillEnter,
 } from '@ionic/vue';
 import { add, createOutline, trashBinOutline } from 'ionicons/icons';
-import { useCategoriesStore } from '@/stores/categories';
+import { useCategoriesStore, type Category } from '@/stores/categories';
 import { usePassesStore } from '@/stores/passes';
 import { useRouter } from 'vue-router';
+import { VueDraggable } from 'vue-draggable-plus';
 
 const categoriesStore = useCategoriesStore();
 const passesStore = usePassesStore();
@@ -62,6 +63,10 @@ const promptDelete = async (id: string, name: string) => {
     }
 };
 
+const onReorder = (newOrder: Category[]) => {
+    categoriesStore.reorderCategories(newOrder);
+};
+
 const promptRename = async (id: string, currentName: string) => {
     const alert = await alertController.create({
         header: 'Categorie hernoemen',
@@ -103,16 +108,25 @@ const promptRename = async (id: string, currentName: string) => {
             </ion-header>
 
             <ion-list v-if="categoriesStore.categories.length">
-                <ion-item v-for="category in categoriesStore.categories" :key="category.id" button @click="navigateToCategory(category.id)">
-                    <ion-label>{{ category.name }}</ion-label>
-                    <ion-note slot="end">{{ passesStore.passes.filter(p => p.categoryId === category.id).length }}</ion-note>
-                    <ion-button fill="clear" slot="end" @click.stop="promptRename(category.id, category.name)">
-                        <ion-icon :icon="createOutline" />
-                    </ion-button>
-                    <ion-button fill="clear" color="danger" slot="end" @click.stop="promptDelete(category.id, category.name)">
-                        <ion-icon :icon="trashBinOutline" />
-                    </ion-button>
-                </ion-item>
+                <VueDraggable
+                    :model-value="categoriesStore.categories"
+                    @update:model-value="onReorder"
+                    animation="150"
+                    item-key="id"
+                    :delay="300"
+                    :delay-on-touch-only="true"
+                >
+                    <ion-item v-for="category in categoriesStore.categories" :key="category.id" button @click="navigateToCategory(category.id)">
+                        <ion-label>{{ category.name }}</ion-label>
+                        <ion-note slot="end">{{ passesStore.passes.filter(pass => pass.categoryId === category.id).length }}</ion-note>
+                        <ion-button fill="clear" slot="end" @click.stop="promptRename(category.id, category.name)">
+                            <ion-icon :icon="createOutline" />
+                        </ion-button>
+                        <ion-button fill="clear" color="danger" slot="end" @click.stop="promptDelete(category.id, category.name)">
+                            <ion-icon :icon="trashBinOutline" />
+                        </ion-button>
+                    </ion-item>
+                </VueDraggable>
             </ion-list>
 
             <div v-else class="empty-state">
