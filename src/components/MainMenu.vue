@@ -22,7 +22,8 @@ import {
 } from '@ionic/vue';
 import { useCategoriesStore } from '@/stores/categories';
 import { useThemeStore } from '@/stores/theme';
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 const categoriesStore = useCategoriesStore();
 const themeStore = useThemeStore();
@@ -36,7 +37,7 @@ const selectCategory = (categoryId: string | null) => {
     categoriesStore.selectedCategoryId = categoryId;
 };
 
-const selectedIndex = ref(0);
+const route = useRoute();
 const appPages = [
     {
         title: 'Passen',
@@ -57,10 +58,9 @@ const appPages = [
         mdIcon: pricetagSharp
     },
 ];
-const path = window.location.pathname;
-if (path !== undefined) {
-    selectedIndex.value = appPages.findIndex((page) => page.url.toLowerCase() === path.toLowerCase());
-}
+const selectedIndex = computed(() =>
+    appPages.findIndex(page => page.url.toLowerCase() === route.path.toLowerCase())
+);
 </script>
 
 <template>
@@ -72,7 +72,6 @@ if (path !== undefined) {
 
                 <ion-menu-toggle :auto-hide="false" v-for="(page, i) in appPages" :key="i">
                     <ion-item
-                        @click="selectedIndex = i"
                         router-direction="root"
                         :router-link="page.url"
                         lines="none"
