@@ -4,7 +4,7 @@ import QRCode from '@/components/CodeViewer/QR-Code.vue';
 import { ScanResult } from '@/types/scan';
 import { computed, useTemplateRef } from 'vue';
 import { Pass } from '@/stores/passes';
-import { usePinchZoom } from '@/composables/usePinchZoom';
+import { useTransformGestures } from '@/composables/useTransformGestures';
 
 interface Props {
     data: ScanResult | Pass;
@@ -19,7 +19,7 @@ const format = computed(() => {
 })
 
 const containerRef = useTemplateRef('containerRef');
-const { transformStyle } = usePinchZoom(containerRef);
+const { transformStyle } = useTransformGestures(containerRef);
 </script>
 
 <template>
