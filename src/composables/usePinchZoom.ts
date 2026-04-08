@@ -101,7 +101,6 @@ export function usePinchZoom(container: Ref<HTMLElement | null | undefined>) {
     function onTouchEnd(e: TouchEvent) {
         if (e.touches.length === 0) {
             isPinching = false;
-            if (scale.value > 0.9 && scale.value < 1.1) reset();
         } else if (e.touches.length === 1 && isPinching) {
             // One finger lifted during pinch — don't accidentally start panning
             isPinching = false;
