@@ -10,7 +10,9 @@
     "test:e2e": "cypress run",
     "test:unit": "vitest",
     "lint": "eslint .",
-    "typecheck": "vue-tsc"
+    "typecheck": "vue-tsc",
+    "icons:render": "node scripts/generate-icons.mjs",
+    "icons:preview": "npx serve resources -p 3333"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
@@ -42,6 +44,7 @@
   "devDependencies": {
     "@capacitor/cli": "^8.0.0",
     "@eslint/js": "^10.0.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@vitejs/plugin-legacy": "^8.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/eslint-config-typescript": "^14.7.0",
